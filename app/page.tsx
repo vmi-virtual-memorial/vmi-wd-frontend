@@ -140,10 +140,7 @@ export default function Home() {
       <footer className="bg-gray-900 text-white py-8 mt-16">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <p className="text-sm">
-            © {new Date().getFullYear()} Virginia Military Institute. All rights reserved.
-          </p>
-          <p className="text-xs mt-2 text-gray-400">
-            &quot;That I May Give Evidence of My Principles Through My Conduct&quot;
+            © {new Date().getFullYear()} matthew forrester wolffe, Richard Caldwell Wolffe Jr.
           </p>
         </div>
       </footer>
