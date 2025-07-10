@@ -64,7 +64,7 @@ export default function Home() {
             <p className="text-xl text-gray-800 mb-8 leading-relaxed">
               This virtual memorial lists the names of VMI Alumni who died on the Field of Honor.
               Their class year is shown with their names.
-              Links for those highlighted provide more information on their story and how they “Gave All.”
+              Links for those highlighted provide more information on their story and how they &quot;Gave All.&quot;
             </p>
 
             {/* Placeholder for statue image */}
@@ -78,7 +78,7 @@ export default function Home() {
               />
             </div>
             <p className="text-2xl text-vmi-red font-bold italic">
-              "In Pace Paratus"
+              &quot;In Pace Paratus&quot;
             </p>
             <p className="text-lg text-gray-700">
               Prepared in Peace
@@ -143,7 +143,7 @@ export default function Home() {
             © {new Date().getFullYear()} Virginia Military Institute. All rights reserved.
           </p>
           <p className="text-xs mt-2 text-gray-400">
-            "That I May Give Evidence of My Principles Through My Conduct"
+            &quot;That I May Give Evidence of My Principles Through My Conduct&quot;
           </p>
         </div>
       </footer>
