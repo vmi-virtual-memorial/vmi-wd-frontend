@@ -1,6 +1,6 @@
 // API configuration for the VMI Memorial frontend
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export interface Conflict {
   id: number;
@@ -33,7 +33,7 @@ export interface PersonDetail extends Person {
 
 // Fetch all conflicts
 export async function getConflicts(): Promise<Conflict[]> {
-  const response = await fetch(`${API_BASE_URL}/memorial/conflicts/`);
+  const response = await fetch(`${API_BASE_URL}/api/memorial/conflicts/`);
   if (!response.ok) {
     throw new Error('Failed to fetch conflicts');
   }
@@ -43,7 +43,7 @@ export async function getConflicts(): Promise<Conflict[]> {
 
 // Fetch people by conflict
 export async function getPeopleByConflict(conflictId: number): Promise<Person[]> {
-  const response = await fetch(`${API_BASE_URL}/memorial/persons/?conflict=${conflictId}`);
+  const response = await fetch(`${API_BASE_URL}/api/memorial/persons/?conflict=${conflictId}`);
   if (!response.ok) {
     throw new Error('Failed to fetch people');
   }
@@ -53,7 +53,7 @@ export async function getPeopleByConflict(conflictId: number): Promise<Person[]>
 
 // Fetch person details
 export async function getPersonDetail(personId: number): Promise<PersonDetail> {
-  const response = await fetch(`${API_BASE_URL}/memorial/persons/${personId}/`);
+  const response = await fetch(`${API_BASE_URL}/api/memorial/persons/${personId}/`);
   if (!response.ok) {
     throw new Error('Failed to fetch person details');
   }
