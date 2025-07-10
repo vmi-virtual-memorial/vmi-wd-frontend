@@ -2,26 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:wght@700;900&display=swap');
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --vmi-red: #AE122A;
+  --vmi-gold: #FFD619;
+  --vmi-dark-red: #8A0E22;
+  --vmi-light-gold: #FFF3B8;
+  --vmi-cream: #d7d4c9;
+  --vmi-black: #1A1A1A;
+  --vmi-gray: #4A4A4A;
+  --vmi-light-gray: #F5F5F5;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Crimson Text', Georgia, serif;
+  color: var(--vmi-black);
+  background: var(--vmi-cream);
+  font-size: 18px;
+  line-height: 1.6;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  color: var(--vmi-black);
+}
+
+/* Custom utility classes for VMI theme */
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .vmi-red {
+    color: var(--vmi-red);
   }
+  
+  .vmi-gold {
+    color: var(--vmi-gold);
+  }
+  
+  .bg-vmi-red {
+    background-color: var(--vmi-red);
+  }
+  
+  .bg-vmi-gold {
+    background-color: var(--vmi-gold);
+  }
+  
+  .bg-vmi-dark-red {
+    background-color: var(--vmi-dark-red);
+  }
+  
+  .border-vmi-red {
+    border-color: var(--vmi-red);
+  }
+  
+  .border-vmi-gold {
+    border-color: var(--vmi-gold);
+  }
+  
+  .hover\:bg-vmi-light-gold:hover {
+    background-color: var(--vmi-light-gold);
+  }
+  
+  .bg-vmi-cream {
+    background-color: var(--vmi-cream);
+  }
+}
+
+/* Override default link colors */
+a {
+  color: var(--vmi-red);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--vmi-dark-red);
+  text-decoration: underline;
 }

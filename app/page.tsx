@@ -1,100 +1,151 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { getConflicts, Conflict } from '@/lib/api';
+import Image from 'next/image';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [conflicts, setConflicts] = useState<Conflict[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    async function fetchConflicts() {
+      try {
+        const data = await getConflicts();
+        setConflicts(data);
+      } catch (err) {
+        setError('Failed to load conflicts');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchConflicts();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-vmi-cream">
+      {/* Header */}
+      <header className="bg-vmi-red shadow-lg">
+        <div className="max-w-6xl mx-auto px-4 py-6 flex justify-between items-center">
+          <div className="flex items-center space-x-3">
+            {/* VMI Seal placeholder - replace with actual image */}
+            <div className="w-16 h-16 bg-vmi-gold rounded-full flex items-center justify-center text-vmi-red font-bold text-xl border-4 border-white">
+              VMI
+            </div>
+            <div className="text-white">
+              <div className="text-sm uppercase tracking-wide">Virginia Military Institute</div>
+              <div className="text-xs">Lexington, Virginia</div>
+            </div>
+          </div>
+          <Link href="/memorial" className="text-vmi-gold hover:text-white transition-colors font-semibold">
+            Memorial Index
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-5xl mx-auto px-4 py-16">
+        {/* Title */}
+        <h1 className="text-5xl font-black text-center mb-16 text-vmi-red">
+          VMI Virtual Memorial
+        </h1>
+
+        {/* Welcome Card */}
+        <div className="bg-white border-2 border-vmi-gold rounded-lg p-10 mb-16 shadow-xl">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-xl text-gray-800 mb-8 leading-relaxed">
+              Since 1839, the Virginia Military Institute has produced leaders of character who have served their country in peace and at war.
+              From the Mexican War to the War on Terrorism, VMI cadets and alumni have answered the call to service.
+            </p>
+
+            <p className="text-xl text-gray-800 mb-8 leading-relaxed">
+              This virtual memorial lists the names of VMI Alumni who died on the Field of Honor.
+              Their class year is shown with their names.
+              Links for those highlighted provide more information on their story and how they “Gave All.”
+            </p>
+
+            {/* Placeholder for statue image */}
+            <div className="relative w-full h-[600px] mb-6 rounded-lg overflow-hidden border-4 border-white shadow-inner">
+              <Image
+                src="/vmi-memorial-statue.jpg"
+                alt="VMI Memorial Statue - Virginia Mourning Her Dead"
+                fill
+                className="object-cover object-top"
+                priority
+              />
+            </div>
+            <p className="text-2xl text-vmi-red font-bold italic">
+              "In Pace Paratus"
+            </p>
+            <p className="text-lg text-gray-700">
+              Prepared in Peace
+            </p>
+          </div>
+        </div>
+
+        {/* Conflicts List */}
+        <div className="bg-white border-2 border-gray-300 rounded-lg p-10 shadow-xl">
+          <h2 className="text-3xl font-bold mb-8 text-center text-vmi-red">
+            Browse by Conflict
+          </h2>
+
+          {loading && (
+            <p className="text-center text-gray-600">Loading conflicts...</p>
+          )}
+
+          {error && (
+            <p className="text-center text-red-600">{error}</p>
+          )}
+
+          {!loading && !error && conflicts.length === 0 && (
+            <p className="text-center text-gray-600">No conflicts found. Please add some through the admin panel.</p>
+          )}
+
+          {!loading && !error && conflicts.length > 0 && (
+            <ul className="space-y-4">
+              {conflicts.map((conflict) => (
+                <li key={conflict.id}>
+                  <Link
+                    href={`/memorial/conflict/${conflict.id}`}
+                    className="block p-6 rounded-lg border-2 border-gray-200 hover:border-vmi-gold hover:bg-vmi-light-gold transition-all duration-200 group"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="text-2xl font-bold text-gray-800 group-hover:text-vmi-red transition-colors">
+                          {conflict.name}
+                        </h3>
+                        <p className="text-gray-600">
+                          {conflict.start_year} – {conflict.end_year || 'Present'}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-4xl font-black text-vmi-red">
+                          {conflict.casualty_count}
+                        </p>
+                        <p className="text-sm text-gray-600 uppercase tracking-wide">Casualties</p>
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-8 mt-16">
+        <div className="max-w-5xl mx-auto px-4 text-center">
+          <p className="text-sm">
+            © {new Date().getFullYear()} Virginia Military Institute. All rights reserved.
+          </p>
+          <p className="text-xs mt-2 text-gray-400">
+            "That I May Give Evidence of My Principles Through My Conduct"
+          </p>
+        </div>
       </footer>
     </div>
   );
