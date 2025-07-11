@@ -1,6 +1,8 @@
 // API configuration for the VMI Memorial frontend
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// const API_BASE_URL = 'https://web-production-6002.up.railway.app';
+
 
 export interface Conflict {
   id: number;
