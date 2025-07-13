@@ -41,7 +41,7 @@ export default function MemorialIndexPage() {
         setConflicts(data);
         
         // By default, expand conflicts with casualties
-        const defaultExpanded = new Set(
+        const defaultExpanded = new Set<number>(
           data.filter((c: ConflictWithCasualties) => c.casualty_count > 0).map((c: ConflictWithCasualties) => c.id)
         );
         setExpandedConflicts(defaultExpanded);
@@ -68,9 +68,9 @@ export default function MemorialIndexPage() {
 
   const toggleAll = () => {
     if (expandedConflicts.size === conflicts.length) {
-      setExpandedConflicts(new Set());
+      setExpandedConflicts(new Set<number>());
     } else {
-      setExpandedConflicts(new Set(conflicts.map(c => c.id)));
+      setExpandedConflicts(new Set<number>(conflicts.map(c => c.id)));
     }
   };
 
