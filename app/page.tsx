@@ -29,20 +29,34 @@ export default function Home() {
     <div className="min-h-screen bg-vmi-cream">
       {/* Header */}
       <header className="bg-vmi-red shadow-lg">
-        <div className="max-w-6xl mx-auto px-4 py-6 flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            {/* VMI Seal placeholder - replace with actual image */}
-            <div className="w-16 h-16 bg-vmi-gold rounded-full flex items-center justify-center text-vmi-red font-bold text-xl border-4 border-white">
-              VMI
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-3">
+              {/* VMI Seal placeholder - replace with actual image */}
+              <div className="w-16 h-16 bg-vmi-gold rounded-full flex items-center justify-center text-vmi-red font-bold text-xl border-4 border-white">
+                VMI
+              </div>
+              <div className="text-white">
+                <div className="text-sm uppercase tracking-wide">Virginia Military Institute</div>
+                <div className="text-xs">Lexington, Virginia</div>
+              </div>
             </div>
-            <div className="text-white">
-              <div className="text-sm uppercase tracking-wide">Virginia Military Institute</div>
-              <div className="text-xs">Lexington, Virginia</div>
-            </div>
+            {/* Navigation */}
+            <nav className="flex items-center space-x-4">
+              <Link 
+                href="/memorial/search" 
+                className="text-vmi-gold hover:text-white transition-colors font-semibold"
+              >
+                Search Memorial
+              </Link>
+              <Link 
+                href="/memorial" 
+                className="bg-vmi-gold text-vmi-red px-6 py-2 rounded font-bold hover:bg-white transition-colors shadow-md"
+              >
+                View Complete Index
+              </Link>
+            </nav>
           </div>
-          <Link href="/memorial" className="text-vmi-gold hover:text-white transition-colors font-semibold">
-            Memorial Index
-          </Link>
         </div>
       </header>
 

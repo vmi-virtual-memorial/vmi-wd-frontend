@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { getPersonDetail, PersonDetail } from '@/lib/api';
+import Header from '@/components/Header';
 
 export default function PersonPage() {
   const params = useParams();
@@ -55,36 +56,29 @@ export default function PersonPage() {
 
   return (
     <div className="min-h-screen bg-vmi-cream">
-      {/* Header */}
-      <header className="bg-vmi-red shadow-lg">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <nav className="flex items-center space-x-3 text-white flex-wrap">
-            <Link href="/" className="text-vmi-gold hover:text-white transition-colors">
-              Home
-            </Link>
-            <span className="text-vmi-gold">›</span>
-            <Link 
-              href={`/memorial/conflict/${person.conflict}`}
-              className="text-vmi-gold hover:text-white transition-colors"
-            >
-              {person.conflict_name}
-            </Link>
-            <span className="text-vmi-gold">›</span>
-            <span className="font-semibold">{person.display_name}</span>
-          </nav>
-        </div>
-      </header>
+      <Header 
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: person.conflict_name, href: `/memorial/conflict/${person.conflict}` },
+          { label: person.display_name }
+        ]}
+      />
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-12">
         {/* Person Header */}
         <div className="bg-vmi-light-gold border-2 border-vmi-gold rounded-lg p-8 mb-12 shadow-xl">
           <h1 className="text-4xl font-black text-vmi-red mb-6">
-            {person.display_name}
+            {person.full_display_name || person.display_name}
           </h1>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-800">
             <div className="space-y-3">
+              {person.class_year && (
+                <p className="text-lg">
+                  <span className="font-bold text-gray-700">Class Year:</span> {person.class_year}
+                </p>
+              )}
               {person.rank && (
                 <p className="text-lg">
                   <span className="font-bold text-gray-700">Rank:</span> {person.rank}

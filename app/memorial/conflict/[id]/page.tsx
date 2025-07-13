@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { getConflicts, getPeopleByConflict, Conflict, Person } from '@/lib/api';
+import Header from '@/components/Header';
 
 export default function ConflictPage() {
   const params = useParams();
@@ -61,18 +62,12 @@ export default function ConflictPage() {
 
   return (
     <div className="min-h-screen bg-vmi-cream">
-      {/* Header */}
-      <header className="bg-vmi-red shadow-lg">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <nav className="flex items-center space-x-3 text-white">
-            <Link href="/" className="text-vmi-gold hover:text-white transition-colors">
-              Home
-            </Link>
-            <span className="text-vmi-gold">›</span>
-            <span className="font-semibold">{conflict.name}</span>
-          </nav>
-        </div>
-      </header>
+      <Header 
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: conflict.name }
+        ]}
+      />
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-12">
@@ -111,7 +106,7 @@ export default function ConflictPage() {
                   className="block p-6 border-2 border-gray-200 rounded-lg hover:border-vmi-gold hover:bg-vmi-light-gold transition-all duration-200 group"
                 >
                   <h3 className="text-xl font-bold text-gray-800 group-hover:text-vmi-red transition-colors mb-2">
-                    {person.display_name}
+                    {person.full_display_name || person.display_name}
                   </h3>
                   {person.rank && (
                     <p className="text-gray-700 font-semibold">{person.rank}</p>
