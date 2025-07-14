@@ -108,6 +108,18 @@ export default function PersonPage() {
           </div>
         </div>
 
+        {/* Death Description Section */}
+        {person.death_description && (
+          <div className="bg-white border-2 border-gray-300 rounded-lg p-8 mb-12 shadow-xl">
+            <h2 className="text-2xl font-bold mb-4 text-vmi-red">
+              Circumstances of Death
+            </h2>
+            <p className="text-lg text-gray-800 leading-relaxed italic">
+              {person.death_description}
+            </p>
+          </div>
+        )}
+
         {/* PDF Viewer */}
         <div className="bg-white border-2 border-gray-300 rounded-lg p-8 shadow-xl">
           <h2 className="text-3xl font-bold mb-6 text-center text-vmi-red">

@@ -29,6 +29,21 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--vmi-black);
 }
 
+/* Line clamp utilities (in case they're not in your Tailwind version) */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
 /* Custom utility classes for VMI theme */
 @layer utilities {
   .vmi-red {

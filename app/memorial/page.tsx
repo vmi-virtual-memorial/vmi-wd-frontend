@@ -9,6 +9,7 @@ interface Person {
   display_name: string;
   rank: string;
   unit: string;
+  death_description?: string;
 }
 
 interface ConflictWithCasualties {
@@ -186,6 +187,11 @@ export default function MemorialIndexPage() {
                         )}
                         {person.unit && (
                           <p className="text-gray-600 text-sm italic">{person.unit}</p>
+                        )}
+                        {person.death_description && (
+                          <p className="text-gray-600 text-sm italic mt-2 line-clamp-2">
+                            {person.death_description}
+                          </p>
                         )}
                       </Link>
                     ))}

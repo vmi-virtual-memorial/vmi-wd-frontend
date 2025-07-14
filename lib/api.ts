@@ -21,6 +21,7 @@ export interface Person {
   unit: string;
   class_year?: number;
   full_display_name?: string;
+  death_description?: string;
 }
 
 export interface PersonDetail extends Person {
@@ -29,6 +30,7 @@ export interface PersonDetail extends Person {
   last_name: string;
   suffix: string;
   date_of_death: string | null;
+  death_description: string;
   conflict: number;
   conflict_name: string;
   pdf_key: string;
