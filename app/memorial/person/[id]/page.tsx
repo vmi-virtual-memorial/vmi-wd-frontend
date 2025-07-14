@@ -14,6 +14,8 @@ export default function PersonPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [loadingPdf, setLoadingPdf] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -30,6 +32,31 @@ export default function PersonPage() {
     
     fetchData();
   }, [personId]);
+
+  useEffect(() => {
+    async function fetchPdfUrl() {
+      if (person && person.pdf_key && !pdfUrl) {
+        setLoadingPdf(true);
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+          const response = await fetch(`${apiUrl}/memorial/persons/${person.id}/pdf/`);
+          if (response.ok) {
+            const data = await response.json();
+            setPdfUrl(data.pdf_url);
+          } else {
+            setPdfError(true);
+          }
+        } catch (err) {
+          console.error('Failed to fetch PDF URL:', err);
+          setPdfError(true);
+        } finally {
+          setLoadingPdf(false);
+        }
+      }
+    }
+
+    fetchPdfUrl();
+  }, [person, pdfUrl]);
 
   if (loading) {
     return (
@@ -51,8 +78,6 @@ export default function PersonPage() {
       </div>
     );
   }
-
-  const pdfUrl = person.pdf_url || '/api/memorial/persons/' + person.id + '/pdf/';
 
   return (
     <div className="min-h-screen bg-vmi-cream">
@@ -128,21 +153,27 @@ export default function PersonPage() {
           
           {person.pdf_key ? (
             <div className="relative">
-              {pdfError ? (
+              {loadingPdf ? (
+                <div className="border-3 border-gray-400 border-dashed rounded-lg p-16 text-center bg-gray-50">
+                  <p className="text-gray-700 text-lg">Loading PDF...</p>
+                </div>
+              ) : pdfError ? (
                 <div className="border-3 border-gray-400 border-dashed rounded-lg p-16 text-center bg-gray-50">
                   <p className="text-gray-700 mb-4 text-lg">
                     Unable to load PDF viewer. 
                   </p>
-                  <a 
-                    href={pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block bg-vmi-red text-white px-6 py-3 rounded hover:bg-vmi-dark-red transition-colors font-semibold"
-                  >
-                    Open PDF in New Tab
-                  </a>
+                  {pdfUrl && (
+                    <a 
+                      href={pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block bg-vmi-red text-white px-6 py-3 rounded hover:bg-vmi-dark-red transition-colors font-semibold"
+                    >
+                      Open PDF in New Tab
+                    </a>
+                  )}
                 </div>
-              ) : (
+              ) : pdfUrl ? (
                 <div className="border-2 border-gray-400 rounded-lg overflow-hidden">
                   <iframe
                     src={`${pdfUrl}#toolbar=0&navpanes=0`}
@@ -161,7 +192,7 @@ export default function PersonPage() {
                     </a>
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
           ) : (
             <div className="border-3 border-gray-400 border-dashed rounded-lg p-16 text-center bg-gray-50">
