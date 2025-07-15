@@ -276,6 +276,7 @@ export default function MemorialSearchPage() {
                         </div>
                         <div>
                           <p className="text-gray-700 font-semibold">{person.conflict_name}</p>
+                          {/* THIS IS WHERE death_date_display IS USED in search results */}
                           {person.death_date_display && (
                             <p className="text-gray-600 text-sm">
                               {person.death_date_display}

@@ -114,6 +114,7 @@ export default function PersonPage() {
               <p className="text-lg">
                 <span className="font-bold text-gray-700">Conflict:</span> {person.conflict_name}
               </p>
+              {/* THIS IS WHERE death_date_display IS USED - Line 117 */}
               {person.death_date_display && (
                 <p className="text-lg">
                   <span className="font-bold text-gray-700">Date of Death:</span>{' '}

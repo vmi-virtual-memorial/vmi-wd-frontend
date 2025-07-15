@@ -24,12 +24,14 @@ export interface Person {
   death_description?: string;
 }
 
+// CHANGED: Added death_date_display?: string
 export interface PersonDetail extends Person {
   first_name: string;
   middle_name: string;
   last_name: string;
   suffix: string;
   date_of_death: string | null;
+  death_date_display?: string;  // <-- ADDED THIS LINE
   death_description: string;
   conflict: number;
   conflict_name: string;
@@ -37,6 +39,7 @@ export interface PersonDetail extends Person {
   pdf_url: string | null;
 }
 
+// CHANGED: Added death_date_display?: string
 export interface PersonSearchResult {
   id: number;
   display_name: string;
@@ -45,6 +48,7 @@ export interface PersonSearchResult {
   rank: string;
   unit: string;
   date_of_death: string | null;
+  death_date_display?: string;  // <-- ADDED THIS LINE
   conflict_name: string;
   conflict_id: number;
 }
