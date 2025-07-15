@@ -276,13 +276,9 @@ export default function MemorialSearchPage() {
                         </div>
                         <div>
                           <p className="text-gray-700 font-semibold">{person.conflict_name}</p>
-                          {person.date_of_death && (
+                          {person.death_date_display && (
                             <p className="text-gray-600 text-sm">
-                              {new Date(person.date_of_death).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                              })}
+                              {person.death_date_display}
                             </p>
                           )}
                         </div>

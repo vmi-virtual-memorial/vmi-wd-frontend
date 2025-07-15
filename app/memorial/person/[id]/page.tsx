@@ -39,15 +39,10 @@ export default function PersonPage() {
         setLoadingPdf(true);
         try {
           const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-          const response = await fetch(`${apiUrl}/memorial/persons/${person.id}/pdf/`);
-          if (response.ok) {
-            const data = await response.json();
-            setPdfUrl(data.pdf_url);
-          } else {
-            setPdfError(true);
-          }
+          // FIXED: Just set the URL directly - don't try to fetch and parse as JSON
+          setPdfUrl(`${apiUrl}/memorial/persons/${person.id}/pdf/`);
         } catch (err) {
-          console.error('Failed to fetch PDF URL:', err);
+          console.error('Failed to set PDF URL:', err);
           setPdfError(true);
         } finally {
           setLoadingPdf(false);
@@ -119,14 +114,10 @@ export default function PersonPage() {
               <p className="text-lg">
                 <span className="font-bold text-gray-700">Conflict:</span> {person.conflict_name}
               </p>
-              {person.date_of_death && (
+              {person.death_date_display && (
                 <p className="text-lg">
                   <span className="font-bold text-gray-700">Date of Death:</span>{' '}
-                  {new Date(person.date_of_death).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
+                  {person.death_date_display}
                 </p>
               )}
             </div>
