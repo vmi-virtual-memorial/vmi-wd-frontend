@@ -3,14 +3,16 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { getPersonDetail, PersonDetail } from '@/lib/api';
+import { getPersonDetail, PersonDetailWithContributions } from '@/lib/api';
 import Header from '@/components/Header';
+import ContributionForm from '@/components/ContributionForm';
+import ContributionDisplay from '@/components/ContributionDisplay';
 
 export default function PersonPage() {
   const params = useParams();
   const personId = parseInt(params.id as string);
   
-  const [person, setPerson] = useState<PersonDetail | null>(null);
+  const [person, setPerson] = useState<PersonDetailWithContributions | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState(false);
@@ -39,7 +41,6 @@ export default function PersonPage() {
         setLoadingPdf(true);
         try {
           const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-          // FIXED: Just set the URL directly - don't try to fetch and parse as JSON
           setPdfUrl(`${apiUrl}/memorial/persons/${person.id}/pdf/`);
         } catch (err) {
           console.error('Failed to set PDF URL:', err);
@@ -52,6 +53,16 @@ export default function PersonPage() {
 
     fetchPdfUrl();
   }, [person, pdfUrl]);
+
+  const handleContributionSuccess = async () => {
+    // Reload person data to get updated contributions
+    try {
+      const personData = await getPersonDetail(personId);
+      setPerson(personData);
+    } catch (err) {
+      console.error('Failed to reload person data:', err);
+    }
+  };
 
   if (loading) {
     return (
@@ -74,6 +85,10 @@ export default function PersonPage() {
     );
   }
 
+  const displayName = person.full_display_name ? 
+    person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '') 
+    : person.display_name;
+
   return (
     <div className="min-h-screen bg-vmi-cream">
       <Header 
@@ -89,9 +104,7 @@ export default function PersonPage() {
         {/* Person Header */}
         <div className="bg-vmi-light-gold border-2 border-vmi-gold rounded-lg p-8 mb-12 shadow-xl">
           <h1 className="text-4xl font-black text-vmi-red mb-2">
-            {person.full_display_name ? 
-              person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '') 
-              : person.display_name}
+            {displayName}
           </h1>
           
           {/* Rank and Unit subtitle */}
@@ -141,7 +154,7 @@ export default function PersonPage() {
         )}
 
         {/* PDF Viewer */}
-        <div className="bg-white border-2 border-gray-300 rounded-lg p-8 shadow-xl">
+        <div className="bg-white border-2 border-gray-300 rounded-lg p-8 shadow-xl mb-12">
           <h2 className="text-3xl font-bold mb-6 text-center text-vmi-red">
             Memorial Document
           </h2>
@@ -197,6 +210,20 @@ export default function PersonPage() {
             </div>
           )}
         </div>
+
+        {/* Community Contributions Section */}
+        <ContributionForm 
+          personId={person.id} 
+          personName={displayName}
+          onSuccess={handleContributionSuccess}
+        />
+        
+        {/* Display Approved Contributions */}
+        {person.contributions && person.contributions.length > 0 && (
+          <div className="bg-white border-2 border-gray-300 rounded-lg p-8 shadow-xl mt-8">
+            <ContributionDisplay contributions={person.contributions} />
+          </div>
+        )}
       </main>
     </div>
   );
