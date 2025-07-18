@@ -222,7 +222,7 @@ export default function ContributionForm({ personId, personName, onSuccess }: Co
                 rows={6}
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-vmi-gold"
                 placeholder="Share any additional information about this person's service, life, or sacrifice..."
-                required={formData.content_type !== 'image'}
+                required={formData.content_type !== 'text'}
               />
               <p className="text-xs text-gray-500 mt-1">
                 Please be respectful and accurate. All submissions are reviewed before publication.
@@ -242,7 +242,7 @@ export default function ContributionForm({ personId, personName, onSuccess }: Co
                 accept="image/jpeg,image/png,image/gif,image/webp"
                 onChange={handleImageChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-vmi-gold"
-                required={formData.content_type !== 'text'}
+                required={formData.content_type !== 'image'}
               />
               <p className="text-xs text-gray-500 mt-1">
                 Max 10MB. Accepted formats: JPEG, PNG, GIF, WebP
