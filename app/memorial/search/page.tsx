@@ -265,7 +265,9 @@ export default function MemorialSearchPage() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                           <h3 className="text-xl font-bold text-gray-800 group-hover:text-vmi-red transition-colors">
-                            {person.full_display_name}
+                            {person.full_display_name ? 
+                              person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '') 
+                              : person.display_name}
                           </h3>
                           {person.rank && (
                             <p className="text-gray-700">{person.rank}</p>
@@ -276,7 +278,6 @@ export default function MemorialSearchPage() {
                         </div>
                         <div>
                           <p className="text-gray-700 font-semibold">{person.conflict_name}</p>
-                          {/* THIS IS WHERE death_date_display IS USED in search results */}
                           {person.death_date_display && (
                             <p className="text-gray-600 text-sm">
                               {person.death_date_display}

@@ -88,9 +88,23 @@ export default function PersonPage() {
       <main className="max-w-6xl mx-auto px-4 py-12">
         {/* Person Header */}
         <div className="bg-vmi-light-gold border-2 border-vmi-gold rounded-lg p-8 mb-12 shadow-xl">
-          <h1 className="text-4xl font-black text-vmi-red mb-6">
-            {person.full_display_name || person.display_name}
+          <h1 className="text-4xl font-black text-vmi-red mb-2">
+            {person.full_display_name ? 
+              person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '') 
+              : person.display_name}
           </h1>
+          
+          {/* Rank and Unit subtitle */}
+          {(person.rank || person.unit) && (
+            <div className="mb-6">
+              {person.rank && (
+                <p className="text-xl font-bold text-gray-700">{person.rank}</p>
+              )}
+              {person.unit && (
+                <p className="text-lg text-gray-600 italic">{person.unit}</p>
+              )}
+            </div>
+          )}
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-800">
             <div className="space-y-3">
@@ -99,22 +113,11 @@ export default function PersonPage() {
                   <span className="font-bold text-gray-700">Class Year:</span> {person.class_year}
                 </p>
               )}
-              {person.rank && (
-                <p className="text-lg">
-                  <span className="font-bold text-gray-700">Rank:</span> {person.rank}
-                </p>
-              )}
-              {person.unit && (
-                <p className="text-lg">
-                  <span className="font-bold text-gray-700">Unit:</span> {person.unit}
-                </p>
-              )}
-            </div>
-            <div className="space-y-3">
               <p className="text-lg">
                 <span className="font-bold text-gray-700">Conflict:</span> {person.conflict_name}
               </p>
-              {/* THIS IS WHERE death_date_display IS USED - Line 117 */}
+            </div>
+            <div className="space-y-3">
               {person.death_date_display && (
                 <p className="text-lg">
                   <span className="font-bold text-gray-700">Date of Death:</span>{' '}

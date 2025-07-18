@@ -106,7 +106,9 @@ export default function ConflictPage() {
                   className="block p-6 border-2 border-gray-200 rounded-lg hover:border-vmi-gold hover:bg-vmi-light-gold transition-all duration-200 group"
                 >
                   <h3 className="text-xl font-bold text-gray-800 group-hover:text-vmi-red transition-colors mb-2">
-                    {person.full_display_name || person.display_name}
+                    {person.full_display_name ? 
+                      person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '') 
+                      : person.display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')}
                   </h3>
                   {person.rank && (
                     <p className="text-gray-700 font-semibold">{person.rank}</p>

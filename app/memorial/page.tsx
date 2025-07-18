@@ -180,7 +180,7 @@ export default function MemorialIndexPage() {
                         className="block p-4 border border-gray-200 rounded hover:border-vmi-gold hover:bg-vmi-light-gold transition-all duration-200 group"
                       >
                         <h3 className="font-bold text-gray-800 group-hover:text-vmi-red transition-colors">
-                          {person.display_name}
+                          {person.display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')}
                         </h3>
                         {person.rank && (
                           <p className="text-gray-700 text-sm">{person.rank}</p>
