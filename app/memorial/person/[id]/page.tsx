@@ -77,7 +77,7 @@ export default function PersonPage() {
   return (
     <div className="min-h-screen bg-vmi-cream">
       <Header 
-        breadcrumbs={[
+        breadcrumbs={[ 
           { label: 'Home', href: '/' },
           { label: person.conflict_name, href: `/memorial/conflict/${person.conflict}` },
           { label: person.display_name }
@@ -88,10 +88,22 @@ export default function PersonPage() {
       <main className="max-w-6xl mx-auto px-4 py-12">
         {/* Person Header */}
         <div className="bg-vmi-light-gold border-2 border-vmi-gold rounded-lg p-8 mb-12 shadow-xl">
-          <h1 className="text-4xl font-black text-vmi-red mb-2">
+          <h1 className="text-4xl font-black text-vmi-red mb-2 flex items-center gap-2">
             {person.full_display_name ? 
               person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '') 
               : person.display_name}
+            {person.pdf_key && (
+              <span title="Memorial document available" className="inline-block align-middle">
+                {/* Simple document icon SVG */}
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-file-text">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <line x1="10" y1="9" x2="9" y2="9" />
+                </svg>
+              </span>
+            )}
           </h1>
           
           {/* Rank and Unit subtitle */}
@@ -143,7 +155,7 @@ export default function PersonPage() {
         {/* PDF Viewer */}
         <div className="bg-white border-2 border-gray-300 rounded-lg p-8 shadow-xl">
           <h2 className="text-3xl font-bold mb-6 text-center text-vmi-red">
-            Memorial Document
+            Memorial Portrait
           </h2>
           
           {person.pdf_key ? (
