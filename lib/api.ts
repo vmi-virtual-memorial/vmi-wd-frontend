@@ -79,6 +79,7 @@ export interface Person {
   class_year?: number;
   full_display_name?: string;
   death_description?: string;
+  pdf_key?: string;
 }
 
 export interface PersonDetail extends Person {
@@ -110,6 +111,7 @@ export interface PersonSearchResult {
   death_date_display?: string;
   conflict_name: string;
   conflict_id: number;
+  pdf_key?: string;
 }
 
 export interface SearchFilters {

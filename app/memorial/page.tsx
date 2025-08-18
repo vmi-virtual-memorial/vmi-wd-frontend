@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import DocumentIcon from '@/components/DocumentIcon';
 
 interface Person {
   id: number;
@@ -10,6 +11,7 @@ interface Person {
   rank: string;
   unit: string;
   death_description?: string;
+  pdf_key?: string;
 }
 
 interface ConflictWithCasualties {
@@ -179,8 +181,9 @@ export default function MemorialIndexPage() {
                         href={`/memorial/person/${person.id}`}
                         className="block p-4 border border-gray-200 rounded hover:border-vmi-gold hover:bg-vmi-light-gold transition-all duration-200 group"
                       >
-                        <h3 className="font-bold text-gray-800 group-hover:text-vmi-red transition-colors">
+                        <h3 className="font-bold text-gray-800 group-hover:text-vmi-red transition-colors flex items-center gap-2">
                           {person.display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')}
+                          {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
                         </h3>
                         {person.rank && (
                           <p className="text-gray-700 text-sm">{person.rank}</p>
