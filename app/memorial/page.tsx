@@ -4,15 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import DocumentIcon from '@/components/DocumentIcon';
-
-interface Person {
-  id: number;
-  display_name: string;
-  rank: string;
-  unit: string;
-  death_description?: string;
-  pdf_key?: string;
-}
+import { PersonDetail } from '@/lib/api';
 
 interface ConflictWithCasualties {
   id: number;
@@ -21,7 +13,7 @@ interface ConflictWithCasualties {
   end_year: number | null;
   description: string;
   casualty_count: number;
-  casualties: Person[];
+  casualties: PersonDetail[];
 }
 
 export default function MemorialIndexPage() {

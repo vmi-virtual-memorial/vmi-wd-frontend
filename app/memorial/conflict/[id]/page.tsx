@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { getConflicts, getPeopleByConflict, Conflict, Person } from '@/lib/api';
+import { getConflicts, getPeopleByConflict, Conflict, PersonDetail } from '@/lib/api';
 import Header from '@/components/Header';
 import DocumentIcon from '@/components/DocumentIcon';
 
@@ -12,7 +12,7 @@ export default function ConflictPage() {
   const conflictId = parseInt(params.id as string);
   
   const [conflict, setConflict] = useState<Conflict | null>(null);
-  const [people, setPeople] = useState<Person[]>([]);
+  const [people, setPeople] = useState<PersonDetail[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

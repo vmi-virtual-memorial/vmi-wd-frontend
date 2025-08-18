@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { searchPeople, getSearchFilters, PersonSearchResult, SearchFilters } from '@/lib/api';
+import { searchPeople, getSearchFilters, PersonDetail, SearchFilters } from '@/lib/api';
 import Header from '@/components/Header';
 import DocumentIcon from '@/components/DocumentIcon';
 
@@ -16,7 +16,7 @@ export default function MemorialSearchPage() {
   const [noDate, setNoDate] = useState(false);
   
   // Results state
-  const [results, setResults] = useState<PersonSearchResult[]>([]);
+  const [results, setResults] = useState<PersonDetail[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);

@@ -139,7 +139,7 @@ export async function getConflicts(): Promise<Conflict[]> {
 }
 
 // Fetch people by conflict
-export async function getPeopleByConflict(conflictId: number): Promise<Person[]> {
+export async function getPeopleByConflict(conflictId: number): Promise<PersonDetail[]> {
   const response = await fetch(`${API_BASE_URL}/memorial/persons/?conflict=${conflictId}`);
   if (!response.ok) {
     throw new Error('Failed to fetch people');
@@ -167,7 +167,7 @@ export async function getMemorialIndex(): Promise<Conflict[]> {
 }
 
 // Search people with filters
-export async function searchPeople(params: SearchParams): Promise<{ count: number; results: PersonSearchResult[] }> {
+export async function searchPeople(params: SearchParams): Promise<{ count: number; results: PersonDetail[] }> {
   const queryParams = new URLSearchParams();
   
   if (params.q) queryParams.append('q', params.q);
