@@ -1,8 +1,65 @@
 // API configuration for the VMI Memorial frontend
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-// const API_BASE_URL = 'https://web-production-6002.up.railway.app/api';
 
+// CSRF token management
+let csrfToken: string | null = null;
+
+// Helper function to get CSRF token from cookies
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop()?.split(';').shift() || null;
+  }
+  return null;
+}
+
+// Get CSRF token from API or cookie
+async function getCSRFToken(): Promise<string | null> {
+  if (csrfToken) return csrfToken;
+  
+  // First try to get from cookie
+  const cookieToken = getCookie('csrftoken');
+  if (cookieToken) {
+    csrfToken = cookieToken;
+    return csrfToken;
+  }
+  
+  // If no cookie, get from API
+  try {
+    const response = await fetch(`${API_BASE_URL}/csrf/`, {
+      credentials: 'include',
+    });
+    if (response.ok) {
+      const data = await response.json();
+      csrfToken = data.csrfToken;
+      return csrfToken;
+    }
+  } catch (error) {
+    console.error('Failed to get CSRF token:', error);
+  }
+  
+  return null;
+}
+
+export interface Contribution {
+  id: number;
+  content_type: 'text' | 'image' | 'both';
+  content_text?: string;
+  content_image?: string;
+  submitted_at: string;
+  contributor_display: string;
+}
+
+export interface ContributionSubmit {
+  contributor_email: string;
+  content_type: 'text' | 'image' | 'both';
+  content_text?: string;
+  content_image?: File;
+}
 
 export interface Conflict {
   id: number;
@@ -24,14 +81,13 @@ export interface Person {
   death_description?: string;
 }
 
-// CHANGED: Added death_date_display?: string
 export interface PersonDetail extends Person {
   first_name: string;
   middle_name: string;
   last_name: string;
   suffix: string;
   date_of_death: string | null;
-  death_date_display?: string;  // <-- ADDED THIS LINE
+  death_date_display?: string;
   death_description: string;
   conflict: number;
   conflict_name: string;
@@ -39,7 +95,10 @@ export interface PersonDetail extends Person {
   pdf_url: string | null;
 }
 
-// CHANGED: Added death_date_display?: string
+export interface PersonDetailWithContributions extends PersonDetail {
+  contributions?: Contribution[];
+}
+
 export interface PersonSearchResult {
   id: number;
   display_name: string;
@@ -48,7 +107,7 @@ export interface PersonSearchResult {
   rank: string;
   unit: string;
   date_of_death: string | null;
-  death_date_display?: string;  // <-- ADDED THIS LINE
+  death_date_display?: string;
   conflict_name: string;
   conflict_id: number;
 }
@@ -130,4 +189,65 @@ export async function getSearchFilters(): Promise<SearchFilters> {
     throw new Error('Failed to fetch search filters');
   }
   return response.json();
+}
+
+// Submit contribution with CSRF protection
+export async function submitContribution(
+  personId: number, 
+  data: ContributionSubmit
+): Promise<Contribution> {
+  const formData = new FormData();
+  formData.append('contributor_email', data.contributor_email);
+  formData.append('content_type', data.content_type);
+  
+  if (data.content_text) {
+    formData.append('content_text', data.content_text);
+  }
+  
+  if (data.content_image) {
+    formData.append('content_image', data.content_image);
+  }
+  
+  // Get CSRF token
+  const token = await getCSRFToken();
+  
+  const headers: HeadersInit = {};
+  if (token) {
+    headers['X-CSRFToken'] = token;
+  }
+  
+  const response = await fetch(
+    `${API_BASE_URL}/memorial/persons/${personId}/contributions/`,
+    {
+      method: 'POST',
+      body: formData,
+      headers,
+      credentials: 'include', // Important for CSRF cookies
+    }
+  );
+  
+  if (!response.ok) {
+    try {
+      const error = await response.json();
+      throw new Error(error.error || error.detail || 'Failed to submit contribution');
+    } catch {
+      throw new Error(`Failed to submit contribution: ${response.statusText}`);
+    }
+  }
+  
+  return response.json();
+}
+
+// Get approved contributions for a person
+export async function getPersonContributions(personId: number): Promise<Contribution[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/memorial/persons/${personId}/contributions/`
+  );
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch contributions');
+  }
+  
+  const data = await response.json();
+  return data.results || [];
 }
