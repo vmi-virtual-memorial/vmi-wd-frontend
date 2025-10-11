@@ -283,9 +283,13 @@ export default function MemorialSearchPage() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                           <h3 className="text-xl font-bold text-gray-800 group-hover:text-vmi-red transition-colors flex items-center gap-2">
-                            {person.full_display_name ? 
-                              person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '') 
-                              : person.display_name}
+                            {(() => {
+                              const name = person.full_display_name || person.display_name;
+                              if (person.rank && person.full_display_name) {
+                                return name.replace(person.rank + ' ', '').replace(person.rank + ', ', '');
+                              }
+                              return person.full_display_name ? name : person.display_name;
+                            })()}
                             {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
                           </h3>
                           {person.rank && (

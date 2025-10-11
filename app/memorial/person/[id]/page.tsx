@@ -85,9 +85,13 @@ export default function PersonPage() {
     );
   }
 
-  const displayName = person.full_display_name ? 
-    person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '') 
-    : person.display_name;
+  const displayName = (() => {
+    const name = person.full_display_name || person.display_name;
+    if (person.rank && person.full_display_name) {
+      return name.replace(person.rank + ' ', '').replace(person.rank + ', ', '');
+    }
+    return person.full_display_name ? name : person.display_name;
+  })();
 
   return (
     <div className="min-h-screen bg-vmi-cream">
