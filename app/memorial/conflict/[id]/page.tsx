@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { getConflicts, getPeopleByConflict, Conflict, PersonDetail } from '@/lib/api';
@@ -18,6 +18,9 @@ export default function ConflictPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(30);
+
+  // Ref for scrolling to top of results list
+  const resultsRef = useRef<HTMLDivElement>(null);
 
 useEffect(() => {
     async function fetchData() {
@@ -52,8 +55,8 @@ useEffect(() => {
   // Handlers for pagination
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    // Scroll to top of results
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll to top of results list
+    resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
@@ -114,7 +117,7 @@ useEffect(() => {
         </div>
 
         {/* People List */}
-        <div className="bg-white border-2 border-gray-300 rounded-lg p-8 shadow-xl">
+        <div ref={resultsRef} className="bg-white border-2 border-gray-300 rounded-lg p-8 shadow-xl">
           <h2 className="text-3xl font-bold mb-8 text-center text-vmi-red">
             Honor Roll
           </h2>
