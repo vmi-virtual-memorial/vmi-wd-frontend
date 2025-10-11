@@ -45,7 +45,6 @@ useEffect(() => {
 
   // Calculate paginated data
   const totalItems = people.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedPeople = people.slice(startIndex, endIndex);
