@@ -78,7 +78,9 @@ export default function ConflictPage() {
             {conflict.name}
           </h1>
           <p className="text-xl text-gray-700 mb-4">
-            {conflict.start_year} – {conflict.end_year || 'Present'}
+            {conflict.start_year === conflict.end_year
+              ? conflict.start_year
+              : `${conflict.start_year} – ${conflict.end_year || 'Present'}`}
           </p>
           {conflict.description && (
             <p className="text-gray-800 leading-relaxed mb-6">{conflict.description}</p>

@@ -148,7 +148,9 @@ export default function MemorialIndexPage() {
                       {conflict.name}
                     </h2>
                     <p className="text-gray-600">
-                      {conflict.start_year} – {conflict.end_year || 'Present'}
+                      {conflict.start_year === conflict.end_year
+                        ? conflict.start_year
+                        : `${conflict.start_year} – ${conflict.end_year || 'Present'}`}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
