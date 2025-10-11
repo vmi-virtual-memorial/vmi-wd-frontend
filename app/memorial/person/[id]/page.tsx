@@ -191,7 +191,7 @@ export default function PersonPage() {
                       href={pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block bg-vmi-red text-white px-6 py-3 rounded hover:bg-vmi-dark-red transition-colors font-semibold"
+                      className="inline-block bg-vmi-red text-white px-6 py-3 rounded hover:bg-vmi-dark-red hover:text-white transition-colors font-semibold"
                     >
                       Open PDF in New Tab
                     </a>
@@ -210,7 +210,7 @@ export default function PersonPage() {
                       href={pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block bg-vmi-red text-white px-6 py-3 rounded hover:bg-vmi-dark-red transition-colors font-semibold"
+                      className="inline-block bg-vmi-red text-white px-6 py-3 rounded hover:bg-vmi-dark-red hover:text-white transition-colors font-semibold"
                     >
                       Open PDF in Full Screen
                     </a>

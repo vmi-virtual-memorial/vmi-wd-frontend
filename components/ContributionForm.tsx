@@ -126,7 +126,7 @@ export default function ContributionForm({ personId, personName, onSuccess }: Co
           </p>
           <button
             onClick={() => setIsOpen(true)}
-            className="bg-vmi-red text-white px-6 py-2 rounded hover:bg-vmi-dark-red transition-colors font-semibold"
+            className="bg-vmi-red text-white px-6 py-2 rounded hover:bg-vmi-dark-red hover:text-white transition-colors font-semibold"
           >
             Add Information or Image
           </button>
@@ -271,9 +271,9 @@ export default function ContributionForm({ personId, personName, onSuccess }: Co
               type="submit"
               disabled={submitting}
               className={`px-6 py-2 rounded font-semibold transition-colors ${
-                submitting 
-                  ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
-                  : 'bg-vmi-red text-white hover:bg-vmi-dark-red'
+                submitting
+                  ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                  : 'bg-vmi-red text-white hover:bg-vmi-dark-red hover:text-white'
               }`}
             >
               {submitting ? 'Submitting...' : 'Submit Contribution'}
