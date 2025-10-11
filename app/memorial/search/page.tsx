@@ -14,6 +14,7 @@ export default function MemorialSearchPage() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [noDate, setNoDate] = useState(false);
+  const [hasDocument, setHasDocument] = useState(false);
   
   // Results state
   const [results, setResults] = useState<PersonDetail[]>([]);
@@ -31,7 +32,7 @@ export default function MemorialSearchPage() {
         // Get filters
         const filterData = await getSearchFilters();
         setFilters(filterData);
-        
+
         // Load all people initially
         const params = {
           q: '',
@@ -39,9 +40,10 @@ export default function MemorialSearchPage() {
           conflict: '',
           date_from: '',
           date_to: '',
-          no_date: false
+          no_date: false,
+          has_document: false
         };
-        
+
         const data = await searchPeople(params);
         setResults(data.results);
         setTotalCount(data.count);
@@ -50,14 +52,14 @@ export default function MemorialSearchPage() {
         console.error('Failed to initialize:', err);
       }
     }
-    
+
     initialize();
   }, []);
 
   const performSearch = async () => {
     setLoading(true);
     setHasSearched(true);
-    
+
     try {
       const params = {
         q: searchTerm,
@@ -65,9 +67,10 @@ export default function MemorialSearchPage() {
         conflict: selectedConflicts.join(','),
         date_from: dateFrom,
         date_to: dateTo,
-        no_date: noDate
+        no_date: noDate,
+        has_document: hasDocument
       };
-      
+
       const data = await searchPeople(params);
       setResults(data.results);
       setTotalCount(data.count);
@@ -108,6 +111,7 @@ export default function MemorialSearchPage() {
     setDateFrom('');
     setDateTo('');
     setNoDate(false);
+    setHasDocument(false);
   };
 
   return (
@@ -130,6 +134,19 @@ export default function MemorialSearchPage() {
               <h2 className="text-2xl font-bold text-vmi-red mb-6">Search Filters</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Memorial Document Filter */}
+                <div>
+                  <label className="flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded">
+                    <input
+                      type="checkbox"
+                      checked={hasDocument}
+                      onChange={(e) => setHasDocument(e.target.checked)}
+                      className="mr-3 text-vmi-red focus:ring-vmi-gold w-4 h-4"
+                    />
+                    <span className="text-sm font-bold text-gray-700">Memorial Document Available</span>
+                  </label>
+                </div>
+
                 {/* Name Search */}
                 <div>
                   <label htmlFor="search" className="block text-sm font-bold text-gray-700 mb-2">

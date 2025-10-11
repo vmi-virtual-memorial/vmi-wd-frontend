@@ -126,6 +126,7 @@ export interface SearchParams {
   date_from?: string;
   date_to?: string;
   no_date?: boolean;
+  has_document?: boolean;
 }
 
 // Fetch all conflicts
@@ -169,14 +170,15 @@ export async function getMemorialIndex(): Promise<Conflict[]> {
 // Search people with filters
 export async function searchPeople(params: SearchParams): Promise<{ count: number; results: PersonDetail[] }> {
   const queryParams = new URLSearchParams();
-  
+
   if (params.q) queryParams.append('q', params.q);
   if (params.class_year) queryParams.append('class_year', params.class_year);
   if (params.conflict) queryParams.append('conflict', params.conflict);
   if (params.date_from) queryParams.append('date_from', params.date_from);
   if (params.date_to) queryParams.append('date_to', params.date_to);
   if (params.no_date !== undefined) queryParams.append('no_date', params.no_date.toString());
-  
+  if (params.has_document !== undefined) queryParams.append('has_document', params.has_document.toString());
+
   const response = await fetch(`${API_BASE_URL}/memorial/persons/search/?${queryParams.toString()}`);
   if (!response.ok) {
     throw new Error('Failed to search people');
