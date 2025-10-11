@@ -140,7 +140,7 @@ export async function getConflicts(): Promise<Conflict[]> {
 
 // Fetch people by conflict
 export async function getPeopleByConflict(conflictId: number): Promise<PersonDetail[]> {
-  const response = await fetch(`${API_BASE_URL}/memorial/persons/?conflict=${conflictId}`);
+  const response = await fetch(`${API_BASE_URL}/memorial/persons/?conflict=${conflictId}&paginate=false`);
   if (!response.ok) {
     throw new Error('Failed to fetch people');
   }

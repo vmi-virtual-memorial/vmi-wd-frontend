@@ -6,26 +6,29 @@ import { useParams } from 'next/navigation';
 import { getConflicts, getPeopleByConflict, Conflict, PersonDetail } from '@/lib/api';
 import Header from '@/components/Header';
 import DocumentIcon from '@/components/DocumentIcon';
+import Pagination from '@/components/Pagination';
 
 export default function ConflictPage() {
   const params = useParams();
   const conflictId = parseInt(params.id as string);
-  
+
   const [conflict, setConflict] = useState<Conflict | null>(null);
   const [people, setPeople] = useState<PersonDetail[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(30);
 
-  useEffect(() => {
+useEffect(() => {
     async function fetchData() {
       try {
         const conflicts = await getConflicts();
         const currentConflict = conflicts.find(c => c.id === conflictId);
-        
+
         if (!currentConflict) {
           throw new Error('Conflict not found');
         }
-        
+
         setConflict(currentConflict);
         const peopleData = await getPeopleByConflict(conflictId);
         setPeople(peopleData);
@@ -36,9 +39,28 @@ export default function ConflictPage() {
         setLoading(false);
       }
     }
-    
+
     fetchData();
   }, [conflictId]);
+
+  // Calculate paginated data
+  const totalItems = people.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedPeople = people.slice(startIndex, endIndex);
+
+  // Handlers for pagination
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of results
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
 
   if (loading) {
     return (
@@ -97,37 +119,58 @@ export default function ConflictPage() {
           <h2 className="text-3xl font-bold mb-8 text-center text-vmi-red">
             Honor Roll
           </h2>
-          
+
           {people.length === 0 ? (
             <p className="text-center text-gray-600 text-lg">No casualties recorded yet.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {people.map((person) => (
-                <Link
-                  key={person.id}
-                  href={`/memorial/person/${person.id}`}
-                  className="block p-6 border-2 border-gray-200 rounded-lg hover:border-vmi-gold hover:bg-vmi-light-gold transition-all duration-200 group"
-                >
-                  <h3 className="text-xl font-bold text-gray-800 group-hover:text-vmi-red transition-colors mb-2 flex items-center gap-2">
-                    {person.full_display_name ? 
-                      person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '') 
-                      : person.display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')}
-                    {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
-                  </h3>
-                  {person.rank && (
-                    <p className="text-gray-700 font-semibold">{person.rank}</p>
-                  )}
-                  {person.unit && (
-                    <p className="text-gray-600 text-sm italic">{person.unit}</p>
-                  )}
-                  {person.death_description && (
-                    <p className="text-gray-600 text-sm italic mt-3 line-clamp-3">
-                      {person.death_description}
-                    </p>
-                  )}
-                </Link>
-              ))}
-            </div>
+            <>
+              {/* Pagination Controls - Top */}
+              <Pagination
+                currentPage={currentPage}
+                totalItems={totalItems}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
+
+              {/* People Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {paginatedPeople.map((person) => (
+                  <Link
+                    key={person.id}
+                    href={`/memorial/person/${person.id}`}
+                    className="block p-6 border-2 border-gray-200 rounded-lg hover:border-vmi-gold hover:bg-vmi-light-gold transition-all duration-200 group"
+                  >
+                    <h3 className="text-xl font-bold text-gray-800 group-hover:text-vmi-red transition-colors mb-2 flex items-center gap-2">
+                      {person.full_display_name ?
+                        person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')
+                        : person.display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')}
+                      {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
+                    </h3>
+                    {person.rank && (
+                      <p className="text-gray-700 font-semibold">{person.rank}</p>
+                    )}
+                    {person.unit && (
+                      <p className="text-gray-600 text-sm italic">{person.unit}</p>
+                    )}
+                    {person.death_description && (
+                      <p className="text-gray-600 text-sm italic mt-3 line-clamp-3">
+                        {person.death_description}
+                      </p>
+                    )}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Pagination Controls - Bottom */}
+              <Pagination
+                currentPage={currentPage}
+                totalItems={totalItems}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
+            </>
           )}
         </div>
       </main>
