@@ -1,0 +1,13 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="180" height="180" rx="40" fill="#AE122A"/>
+
+  <!-- Gold border -->
+  <rect x="10" y="10" width="160" height="160" rx="30" fill="none" stroke="#FFD619" stroke-width="4"/>
+
+  <!-- VMI Text -->
+  <text x="90" y="115" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="#FFD619" text-anchor="middle">VMI</text>
+
+  <!-- Small subtitle -->
+  <text x="90" y="140" font-family="Arial, sans-serif" font-size="14" fill="#FFD619" text-anchor="middle" opacity="0.8">Memorial</text>
+</svg>

@@ -148,7 +148,9 @@ export default function MemorialIndexPage() {
                       {conflict.name}
                     </h2>
                     <p className="text-gray-600">
-                      {conflict.start_year} – {conflict.end_year || 'Present'}
+                      {conflict.start_year === conflict.end_year
+                        ? conflict.start_year
+                        : `${conflict.start_year} – ${conflict.end_year || 'Present'}`}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
@@ -174,7 +176,9 @@ export default function MemorialIndexPage() {
                         className="block p-4 border border-gray-200 rounded hover:border-vmi-gold hover:bg-vmi-light-gold transition-all duration-200 group"
                       >
                         <h3 className="font-bold text-gray-800 group-hover:text-vmi-red transition-colors flex items-center gap-2">
-                          {person.display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')}
+                          {person.rank
+                            ? person.display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')
+                            : person.display_name}
                           {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
                         </h3>
                         {person.rank && (

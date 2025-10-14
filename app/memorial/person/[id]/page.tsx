@@ -85,9 +85,13 @@ export default function PersonPage() {
     );
   }
 
-  const displayName = person.full_display_name ? 
-    person.full_display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '') 
-    : person.display_name;
+  const displayName = (() => {
+    const name = person.full_display_name || person.display_name;
+    if (person.rank && person.full_display_name) {
+      return name.replace(person.rank + ' ', '').replace(person.rank + ', ', '');
+    }
+    return person.full_display_name ? name : person.display_name;
+  })();
 
   return (
     <div className="min-h-screen bg-vmi-cream">
@@ -183,11 +187,11 @@ export default function PersonPage() {
                     Unable to load PDF viewer. 
                   </p>
                   {pdfUrl && (
-                    <a 
+                    <a
                       href={pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block bg-vmi-red text-white px-6 py-3 rounded hover:bg-vmi-dark-red transition-colors font-semibold"
+                      className="inline-block bg-vmi-red text-white px-6 py-3 rounded hover:bg-vmi-dark-red hover:text-white transition-colors font-semibold"
                     >
                       Open PDF in New Tab
                     </a>
@@ -202,11 +206,11 @@ export default function PersonPage() {
                     title={`Memorial document for ${person.display_name}`}
                   />
                   <div className="p-6 bg-gray-100 text-center border-t-2 border-gray-400">
-                    <a 
+                    <a
                       href={pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block bg-vmi-red text-white px-6 py-3 rounded hover:bg-vmi-dark-red transition-colors font-semibold"
+                      className="inline-block bg-vmi-red text-white px-6 py-3 rounded hover:bg-vmi-dark-red hover:text-white transition-colors font-semibold"
                     >
                       Open PDF in Full Screen
                     </a>
