@@ -139,7 +139,7 @@ export default function PersonPage() {
             <div className="space-y-3">
               {person.class_year && (
                 <p className="text-lg">
-                  <span className="font-bold text-gray-700">Class Year:</span> {person.class_year}
+                  <span className="font-bold text-gray-700">Class Year:</span> {person.class_year}{person.class_letter || ''}
                 </p>
               )}
               <p className="text-lg">

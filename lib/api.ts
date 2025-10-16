@@ -77,6 +77,7 @@ export interface Person {
   rank: string;
   unit: string;
   class_year?: number;
+  class_letter?: string;
   full_display_name?: string;
   death_description?: string;
   pdf_key?: string;
@@ -105,6 +106,7 @@ export interface PersonSearchResult {
   display_name: string;
   full_display_name: string;
   class_year: number | null;
+  class_letter?: string;
   rank: string;
   unit: string;
   date_of_death: string | null;
