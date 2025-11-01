@@ -22,6 +22,7 @@ export default function MemorialIndexPage() {
   const [error, setError] = useState<string | null>(null);
   const [expandedConflicts, setExpandedConflicts] = useState<Set<number>>(new Set());
   const [sortBy, setSortBy] = useState<'alphabetical' | 'class_year'>('alphabetical');
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -37,11 +38,12 @@ export default function MemorialIndexPage() {
         setConflicts(data);
 
         // By default, expand conflicts with casualties (only on first load)
-        if (expandedConflicts.size === 0) {
+        if (isInitialLoad) {
           const defaultExpanded = new Set<number>(
             data.filter((c: ConflictWithCasualties) => c.casualty_count > 0).map((c: ConflictWithCasualties) => c.id)
           );
           setExpandedConflicts(defaultExpanded);
+          setIsInitialLoad(false);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load data');
@@ -52,7 +54,7 @@ export default function MemorialIndexPage() {
     }
 
     fetchData();
-  }, [sortBy]);
+  }, [sortBy, isInitialLoad]);
 
   const toggleConflict = (conflictId: number) => {
     const newExpanded = new Set(expandedConflicts);
@@ -157,7 +159,7 @@ export default function MemorialIndexPage() {
                       : 'text-gray-500'
                   }`}
                 >
-                  '42
+                  &apos;42
                 </span>
               </button>
             </div>
@@ -211,7 +213,7 @@ export default function MemorialIndexPage() {
                             ? person.display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')
                             : person.display_name}
                           {person.class_year && (
-                            <span className="text-gray-600 font-normal">'{String(person.class_year).slice(-2)}</span>
+                            <span className="text-gray-600 font-normal">&apos;{String(person.class_year).slice(-2)}</span>
                           )}
                           {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
                         </h3>
