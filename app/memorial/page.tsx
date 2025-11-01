@@ -21,25 +21,28 @@ export default function MemorialIndexPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedConflicts, setExpandedConflicts] = useState<Set<number>>(new Set());
+  const [sortBy, setSortBy] = useState<'alphabetical' | 'class_year'>('alphabetical');
 
   useEffect(() => {
     async function fetchData() {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-        const response = await fetch(`${apiUrl}/memorial/index/`);
-        
+        const response = await fetch(`${apiUrl}/memorial/index/?sort=${sortBy}`);
+
         if (!response.ok) {
           throw new Error('Failed to fetch memorial index');
         }
-        
+
         const data = await response.json();
         setConflicts(data);
-        
-        // By default, expand conflicts with casualties
-        const defaultExpanded = new Set<number>(
-          data.filter((c: ConflictWithCasualties) => c.casualty_count > 0).map((c: ConflictWithCasualties) => c.id)
-        );
-        setExpandedConflicts(defaultExpanded);
+
+        // By default, expand conflicts with casualties (only on first load)
+        if (expandedConflicts.size === 0) {
+          const defaultExpanded = new Set<number>(
+            data.filter((c: ConflictWithCasualties) => c.casualty_count > 0).map((c: ConflictWithCasualties) => c.id)
+          );
+          setExpandedConflicts(defaultExpanded);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load data');
         console.error(err);
@@ -47,9 +50,9 @@ export default function MemorialIndexPage() {
         setLoading(false);
       }
     }
-    
+
     fetchData();
-  }, []);
+  }, [sortBy]);
 
   const toggleConflict = (conflictId: number) => {
     const newExpanded = new Set(expandedConflicts);
@@ -123,13 +126,41 @@ export default function MemorialIndexPage() {
               <span className="text-vmi-red font-bold">{totalCasualties}</span>
             </div>
           </div>
-          <div className="mt-6">
+          <div className="mt-6 flex justify-between items-center">
             <button
               onClick={toggleAll}
               className="bg-vmi-red text-white px-6 py-2 rounded hover:bg-vmi-dark-red transition-colors font-semibold"
             >
               {expandedConflicts.size === conflicts.length ? 'Collapse All' : 'Expand All'}
             </button>
+
+            {/* Sort Toggle */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Sort by:</span>
+              <button
+                onClick={() => setSortBy(sortBy === 'alphabetical' ? 'class_year' : 'alphabetical')}
+                className="flex items-center bg-white border-2 border-gray-300 rounded-full p-1 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <span
+                  className={`px-3 py-1 rounded-full transition-all ${
+                    sortBy === 'alphabetical'
+                      ? 'bg-vmi-red text-white font-semibold'
+                      : 'text-gray-500'
+                  }`}
+                >
+                  ABC
+                </span>
+                <span
+                  className={`px-3 py-1 rounded-full transition-all ${
+                    sortBy === 'class_year'
+                      ? 'bg-vmi-red text-white font-semibold'
+                      : 'text-gray-500'
+                  }`}
+                >
+                  '42
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -179,6 +210,9 @@ export default function MemorialIndexPage() {
                           {person.rank
                             ? person.display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')
                             : person.display_name}
+                          {person.class_year && (
+                            <span className="text-gray-600 font-normal">'{String(person.class_year).slice(-2)}</span>
+                          )}
                           {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
                         </h3>
                         {person.rank && (
