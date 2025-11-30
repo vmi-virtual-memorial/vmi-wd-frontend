@@ -172,7 +172,7 @@ export default function AwardDetailPage() {
                   </div>
                   {recipient.citation && (
                     <p className="mt-2 text-sm text-gray-600 line-clamp-2 italic">
-                      "{recipient.citation}"
+                      &ldquo;{recipient.citation}&rdquo;
                     </p>
                   )}
                 </Link>

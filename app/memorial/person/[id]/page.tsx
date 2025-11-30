@@ -219,7 +219,7 @@ export default function PersonPage() {
                       )}
                       {award.citation && (
                         <p className="text-sm text-gray-600 italic line-clamp-2 mt-1">
-                          "{award.citation}"
+                          &ldquo;{award.citation}&rdquo;
                         </p>
                       )}
                     </div>
