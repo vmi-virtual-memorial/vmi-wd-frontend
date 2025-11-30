@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { searchPeople, getSearchFilters, PersonDetail, SearchFilters } from '@/lib/api';
 import Header from '@/components/Header';
 import DocumentIcon from '@/components/DocumentIcon';
+import AwardIcon from '@/components/AwardIcon';
 
 export default function MemorialSearchPage() {
   // Search state
@@ -290,6 +291,7 @@ export default function MemorialSearchPage() {
                               }
                               return person.full_display_name ? name : person.display_name;
                             })()}
+                            {person.has_awards && <AwardIcon className="flex-shrink-0" />}
                             {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
                           </h3>
                           {person.rank && (

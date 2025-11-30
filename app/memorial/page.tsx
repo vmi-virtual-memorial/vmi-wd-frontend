@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import DocumentIcon from '@/components/DocumentIcon';
+import AwardIcon from '@/components/AwardIcon';
 import { PersonDetail } from '@/lib/api';
 
 interface ConflictWithCasualties {
@@ -215,6 +216,7 @@ export default function MemorialIndexPage() {
                           {person.class_year && (
                             <span className="text-gray-600 font-normal">&apos;{String(person.class_year).slice(-2)}</span>
                           )}
+                          {person.has_awards && <AwardIcon className="flex-shrink-0" />}
                           {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
                         </h3>
                         {person.rank && (

@@ -43,14 +43,20 @@ export default function Home() {
             </div>
             {/* Navigation */}
             <nav className="flex items-center space-x-4">
-              <Link 
-                href="/memorial/search" 
+              <Link
+                href="/memorial/search"
                 className="text-vmi-gold hover:text-white transition-colors font-semibold"
               >
                 Search Memorial
               </Link>
-              <Link 
-                href="/memorial" 
+              <Link
+                href="/awards"
+                className="bg-vmi-gold text-vmi-red px-4 py-2 rounded font-bold hover:bg-white transition-colors shadow-md text-center text-sm leading-tight"
+              >
+                Awards for<br />Heroism &amp; Gallantry
+              </Link>
+              <Link
+                href="/memorial"
                 className="bg-vmi-gold text-vmi-red px-6 py-2 rounded font-bold hover:bg-white transition-colors shadow-md"
               >
                 View Complete Index

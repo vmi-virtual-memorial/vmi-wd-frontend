@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { getConflicts, getPeopleByConflict, Conflict, PersonDetail } from '@/lib/api';
 import Header from '@/components/Header';
 import DocumentIcon from '@/components/DocumentIcon';
+import AwardIcon from '@/components/AwardIcon';
 import Pagination from '@/components/Pagination';
 
 export default function ConflictPage() {
@@ -152,6 +153,7 @@ useEffect(() => {
                         }
                         return name;
                       })()}
+                      {person.has_awards && <AwardIcon className="flex-shrink-0" />}
                       {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
                     </h3>
                     {person.rank && (

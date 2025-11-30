@@ -81,6 +81,7 @@ export interface Person {
   full_display_name?: string;
   death_description?: string;
   pdf_key?: string;
+  has_awards?: boolean;
 }
 
 export interface PersonDetail extends Person {
@@ -97,8 +98,47 @@ export interface PersonDetail extends Person {
   pdf_url: string | null;
 }
 
+// Award interfaces
+export interface Award {
+  id: number;
+  name: string;
+  short_description: string;
+  image_filename: string;
+  recipient_count: number;
+  total_awards_given: number;
+  order: number;
+}
+
+export interface AwardRecipient {
+  person_id: number;
+  display_name: string;
+  full_display_name: string;
+  class_year: number | null;
+  class_letter: string;
+  conflict_name: string;
+  pdf_key: string;
+  count: number;
+  date_awarded: string | null;
+  citation: string;
+}
+
+export interface AwardDetail extends Award {
+  long_description: string;
+  recipients: AwardRecipient[];
+}
+
+export interface PersonAward {
+  award_id: number;
+  award_name: string;
+  award_image_filename: string;
+  count: number;
+  date_awarded: string | null;
+  citation: string;
+}
+
 export interface PersonDetailWithContributions extends PersonDetail {
   contributions?: Contribution[];
+  awards?: PersonAward[];
 }
 
 export interface PersonSearchResult {
@@ -114,6 +154,7 @@ export interface PersonSearchResult {
   conflict_name: string;
   conflict_id: number;
   pdf_key?: string;
+  has_awards?: boolean;
 }
 
 export interface SearchFilters {
@@ -249,11 +290,30 @@ export async function getPersonContributions(personId: number): Promise<Contribu
   const response = await fetch(
     `${API_BASE_URL}/memorial/persons/${personId}/contributions/`
   );
-  
+
   if (!response.ok) {
     throw new Error('Failed to fetch contributions');
   }
-  
+
   const data = await response.json();
   return data.results || [];
+}
+
+// Fetch all awards
+export async function getAwards(): Promise<Award[]> {
+  const response = await fetch(`${API_BASE_URL}/memorial/awards/`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch awards');
+  }
+  const data = await response.json();
+  return data.results || data;
+}
+
+// Fetch award detail with recipients
+export async function getAwardDetail(awardId: number): Promise<AwardDetail> {
+  const response = await fetch(`${API_BASE_URL}/memorial/awards/${awardId}/`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch award details');
+  }
+  return response.json();
 }

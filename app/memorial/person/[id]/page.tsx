@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { getPersonDetail, PersonDetailWithContributions } from '@/lib/api';
 import Header from '@/components/Header';
@@ -166,6 +167,66 @@ export default function PersonPage() {
             <p className="text-lg text-gray-800 leading-relaxed italic">
               {person.death_description}
             </p>
+          </div>
+        )}
+
+        {/* Awards Section */}
+        {person.awards && person.awards.length > 0 && (
+          <div className="bg-white border-2 border-gray-300 rounded-lg p-8 mb-12 shadow-xl">
+            <h2 className="text-2xl font-bold mb-6 text-vmi-red">
+              Awards for Heroism &amp; Gallantry
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {person.awards.map((award) => {
+                const getImagePath = (filename: string) => {
+                  const extensions = ['.jpg', '.png', '.jpeg', '.gif'];
+                  for (const ext of extensions) {
+                    if (filename.toLowerCase().endsWith(ext)) {
+                      return `/${filename}`;
+                    }
+                  }
+                  return `/${filename}.jpg`;
+                };
+
+                return (
+                  <Link
+                    key={award.award_id}
+                    href={`/awards/${award.award_id}`}
+                    className="flex items-center gap-4 p-4 rounded-lg border-2 border-gray-200 hover:border-vmi-gold hover:bg-vmi-light-gold transition-all duration-200 group"
+                  >
+                    <div className="relative w-16 h-20 flex-shrink-0">
+                      <Image
+                        src={getImagePath(award.award_image_filename)}
+                        alt={award.award_name}
+                        fill
+                        className="object-contain"
+                        sizes="64px"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-800 group-hover:text-vmi-red transition-colors">
+                        {award.award_name}
+                        {award.count > 1 && (
+                          <span className="ml-2 text-sm text-vmi-gold">
+                            (×{award.count})
+                          </span>
+                        )}
+                      </h3>
+                      {award.date_awarded && (
+                        <p className="text-sm text-gray-500">
+                          {new Date(award.date_awarded).toLocaleDateString()}
+                        </p>
+                      )}
+                      {award.citation && (
+                        <p className="text-sm text-gray-600 italic line-clamp-2 mt-1">
+                          "{award.citation}"
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         )}
 
