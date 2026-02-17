@@ -56,7 +56,7 @@ export default function AwardsPage() {
             Awards for Heroism and Gallantry
           </h1>
           <p className="text-center text-gray-700 max-w-3xl mx-auto">
-            those Alumni who &ldquo;Gave All&rdquo; on this memorial website who were also recognized for valor and heroism in combat are listed on this page with a link to their profile.
+            Those Alumni who &ldquo;Gave All&rdquo; on this memorial website who were also recognized for valor and heroism in combat are listed on this page with a link to their profile.
             These awards honor extraordinary acts of bravery and selfless service in defense of our country.
           </p>
         </div>
