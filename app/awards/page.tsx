@@ -57,7 +57,8 @@ export default function AwardsPage() {
           </h1>
           <p className="text-center text-gray-700 max-w-3xl mx-auto">
             Those Alumni who &ldquo;Gave All&rdquo; on this memorial website who were also recognized for valor and heroism in combat are listed on this page with a link to their profile.
-            These awards honor extraordinary acts of bravery and selfless service in defense of our country.
+            These awards honor extraordinary acts of bravery and selfless service in defense of our country. Including VMI alumni who survived their wars, who are not listed here, a total of seven VMI alumni received the Medal of Honor,
+            and over 80 alumni earned the second-highest valor awards - The Navy Cross, The Distinguished Service Cross, and The Air Force Cross. The number of VMI alumni who have received the Silver Star, the third highest award for valor is well over xxx.
           </p>
         </div>
 
