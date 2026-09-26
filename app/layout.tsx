@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Footer from "@/components/Footer";
+import NavigationMemory from "@/components/NavigationMemory";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased flex flex-col min-h-screen">
+        <NavigationMemory />
         <div className="flex-grow">
           {children}
         </div>
