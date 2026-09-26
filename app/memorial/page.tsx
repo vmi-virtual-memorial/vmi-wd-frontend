@@ -7,6 +7,16 @@ import DocumentIcon from '@/components/DocumentIcon';
 import AwardIcon from '@/components/AwardIcon';
 import { PersonDetail } from '@/lib/api';
 import { formatClassYear } from '@/lib/classYear';
+import {
+  loadSession,
+  readSearchParam,
+  replaceSearchParams,
+  saveSession,
+  useIsHistoryNavigation,
+  useScrollRestoration,
+} from '@/lib/navigation';
+
+const EXPANDED_KEY = 'memorial-index:expanded';
 
 interface ConflictWithCasualties {
   id: number;
@@ -23,8 +33,11 @@ export default function MemorialIndexPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedConflicts, setExpandedConflicts] = useState<Set<number>>(new Set());
-  const [sortBy, setSortBy] = useState<'alphabetical' | 'class_year'>('alphabetical');
+  const [sortBy, setSortBy] = useState<'alphabetical' | 'class_year'>(() =>
+    readSearchParam('sort') === 'class_year' ? 'class_year' : 'alphabetical'
+  );
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const isHistoryNavigation = useIsHistoryNavigation();
 
   useEffect(() => {
     async function fetchData() {
@@ -39,10 +52,12 @@ export default function MemorialIndexPage() {
         const data = await response.json();
         setConflicts(data);
 
-        // By default, expand conflicts with casualties (only on first load)
+        // By default, expand conflicts with casualties (only on first load);
+        // returning via back restores whatever the user had expanded
         if (isInitialLoad) {
+          const saved = isHistoryNavigation ? loadSession<number[]>(EXPANDED_KEY) : null;
           const defaultExpanded = new Set<number>(
-            data.filter((c: ConflictWithCasualties) => c.casualty_count > 0).map((c: ConflictWithCasualties) => c.id)
+            saved ?? data.filter((c: ConflictWithCasualties) => c.casualty_count > 0).map((c: ConflictWithCasualties) => c.id)
           );
           setExpandedConflicts(defaultExpanded);
           setIsInitialLoad(false);
@@ -56,7 +71,17 @@ export default function MemorialIndexPage() {
     }
 
     fetchData();
-  }, [sortBy, isInitialLoad]);
+  }, [sortBy, isInitialLoad, isHistoryNavigation]);
+
+  useEffect(() => {
+    replaceSearchParams({ sort: sortBy === 'class_year' ? sortBy : null });
+  }, [sortBy]);
+
+  useEffect(() => {
+    if (!isInitialLoad) saveSession(EXPANDED_KEY, Array.from(expandedConflicts));
+  }, [expandedConflicts, isInitialLoad]);
+
+  useScrollRestoration(!loading);
 
   const toggleConflict = (conflictId: number) => {
     const newExpanded = new Set(expandedConflicts);
