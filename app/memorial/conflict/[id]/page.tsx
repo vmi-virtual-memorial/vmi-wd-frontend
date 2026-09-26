@@ -8,6 +8,9 @@ import Header from '@/components/Header';
 import DocumentIcon from '@/components/DocumentIcon';
 import AwardIcon from '@/components/AwardIcon';
 import Pagination from '@/components/Pagination';
+import { readPositiveInt, replaceSearchParams, useScrollRestoration } from '@/lib/navigation';
+
+const DEFAULT_PER_PAGE = 30;
 
 export default function ConflictPage() {
   const params = useParams();
@@ -17,8 +20,9 @@ export default function ConflictPage() {
   const [people, setPeople] = useState<PersonDetail[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(30);
+  // Pagination lives in the URL so back navigation returns to the same page
+  const [currentPage, setCurrentPage] = useState(() => readPositiveInt('page') ?? 1);
+  const [itemsPerPage, setItemsPerPage] = useState(() => readPositiveInt('per') ?? DEFAULT_PER_PAGE);
 
   // Ref for scrolling to top of results list
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -47,9 +51,20 @@ useEffect(() => {
     fetchData();
   }, [conflictId]);
 
-  // Calculate paginated data
+  useEffect(() => {
+    replaceSearchParams({
+      page: currentPage > 1 ? currentPage : null,
+      per: itemsPerPage !== DEFAULT_PER_PAGE ? itemsPerPage : null,
+    });
+  }, [currentPage, itemsPerPage]);
+
+  useScrollRestoration(!loading);
+
+  // Calculate paginated data (clamp a stale page from the URL to the last page)
   const totalItems = people.length;
-  const startIndex = (currentPage - 1) * itemsPerPage;
+  const lastPage = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  const page = Math.min(currentPage, lastPage);
+  const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedPeople = people.slice(startIndex, endIndex);
 
@@ -129,7 +144,7 @@ useEffect(() => {
             <>
               {/* Pagination Controls - Top */}
               <Pagination
-                currentPage={currentPage}
+                currentPage={page}
                 totalItems={totalItems}
                 itemsPerPage={itemsPerPage}
                 onPageChange={handlePageChange}
@@ -163,7 +178,7 @@ useEffect(() => {
                       <p className="text-gray-600 text-sm italic">{person.unit}</p>
                     )}
                     {person.death_description && (
-                      <p className="text-gray-600 text-sm italic mt-3 line-clamp-3">
+                      <p className="text-gray-600 text-sm italic mt-3 line-clamp-4">
                         {person.death_description}
                       </p>
                     )}
@@ -173,7 +188,7 @@ useEffect(() => {
 
               {/* Pagination Controls - Bottom */}
               <Pagination
-                currentPage={currentPage}
+                currentPage={page}
                 totalItems={totalItems}
                 itemsPerPage={itemsPerPage}
                 onPageChange={handlePageChange}

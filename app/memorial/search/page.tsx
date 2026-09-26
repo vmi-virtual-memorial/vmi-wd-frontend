@@ -2,10 +2,28 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { searchPeople, getSearchFilters, PersonDetail, SearchFilters } from '@/lib/api';
+import { searchPeople, getSearchFilters, PersonDetail, SearchFilters, SearchParams } from '@/lib/api';
 import Header from '@/components/Header';
 import DocumentIcon from '@/components/DocumentIcon';
 import AwardIcon from '@/components/AwardIcon';
+import { replaceSearchParams, useScrollRestoration } from '@/lib/navigation';
+
+const parseIds = (value: string | null) =>
+  (value || '').split(',').map(Number).filter(n => Number.isInteger(n) && n > 0);
+
+// The last applied search is kept in the URL so back navigation returns to the same results
+function searchParamsFromUrl(): Required<SearchParams> {
+  const url = new URLSearchParams(window.location.search);
+  return {
+    q: url.get('q') || '',
+    class_year: parseIds(url.get('class_year')).join(','),
+    conflict: parseIds(url.get('conflict')).join(','),
+    date_from: url.get('date_from') || '',
+    date_to: url.get('date_to') || '',
+    no_date: url.get('no_date') === 'true',
+    has_document: url.get('has_document') === 'true',
+  };
+}
 
 export default function MemorialSearchPage() {
   // Search state
@@ -26,7 +44,7 @@ export default function MemorialSearchPage() {
   // Filters state
   const [filters, setFilters] = useState<SearchFilters>({ conflicts: [], class_years: [] });
 
-  // Load all people on mount and get filters
+  // Load people on mount (restoring any search from the URL) and get filters
   useEffect(() => {
     async function initialize() {
       try {
@@ -34,16 +52,14 @@ export default function MemorialSearchPage() {
         const filterData = await getSearchFilters();
         setFilters(filterData);
 
-        // Load all people initially
-        const params = {
-          q: '',
-          class_year: '',
-          conflict: '',
-          date_from: '',
-          date_to: '',
-          no_date: false,
-          has_document: false
-        };
+        const params = searchParamsFromUrl();
+        setSearchTerm(params.q);
+        setSelectedClassYears(parseIds(params.class_year));
+        setSelectedConflicts(parseIds(params.conflict));
+        setDateFrom(params.date_from);
+        setDateTo(params.date_to);
+        setNoDate(params.no_date);
+        setHasDocument(params.has_document);
 
         const data = await searchPeople(params);
         setResults(data.results);
@@ -56,6 +72,8 @@ export default function MemorialSearchPage() {
 
     initialize();
   }, []);
+
+  useScrollRestoration(hasSearched && !loading);
 
   const performSearch = async () => {
     setLoading(true);
@@ -71,6 +89,12 @@ export default function MemorialSearchPage() {
         no_date: noDate,
         has_document: hasDocument
       };
+
+      replaceSearchParams({
+        ...params,
+        no_date: params.no_date ? 'true' : null,
+        has_document: params.has_document ? 'true' : null,
+      });
 
       const data = await searchPeople(params);
       setResults(data.results);
