@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import DocumentIcon from '@/components/DocumentIcon';
 import AwardIcon from '@/components/AwardIcon';
 import { PersonDetail } from '@/lib/api';
+import { formatClassYear } from '@/lib/classYear';
 
 interface ConflictWithCasualties {
   id: number;
@@ -214,7 +215,7 @@ export default function MemorialIndexPage() {
                             ? person.display_name.replace(person.rank + ' ', '').replace(person.rank + ', ', '')
                             : person.display_name}
                           {person.class_year && (
-                            <span className="text-gray-600 font-normal">&apos;{String(person.class_year).slice(-2)}</span>
+                            <span className="text-gray-600 font-normal">{formatClassYear(person.class_year, person.class_letter)}</span>
                           )}
                           {person.has_awards && <AwardIcon className="flex-shrink-0" />}
                           {person.pdf_key && <DocumentIcon className="flex-shrink-0" />}
