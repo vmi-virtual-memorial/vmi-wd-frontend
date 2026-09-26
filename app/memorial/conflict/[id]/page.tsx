@@ -163,7 +163,7 @@ useEffect(() => {
                       <p className="text-gray-600 text-sm italic">{person.unit}</p>
                     )}
                     {person.death_description && (
-                      <p className="text-gray-600 text-sm italic mt-3 line-clamp-3">
+                      <p className="text-gray-600 text-sm italic mt-3 line-clamp-4">
                         {person.death_description}
                       </p>
                     )}

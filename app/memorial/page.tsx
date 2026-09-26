@@ -226,7 +226,7 @@ export default function MemorialIndexPage() {
                           <p className="text-gray-600 text-sm italic">{person.unit}</p>
                         )}
                         {person.death_description && (
-                          <p className="text-gray-600 text-sm italic mt-2 line-clamp-2">
+                          <p className="text-gray-600 text-sm italic mt-2 line-clamp-4">
                             {person.death_description}
                           </p>
                         )}

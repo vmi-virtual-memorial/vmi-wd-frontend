@@ -44,6 +44,13 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-line-clamp: 3;
 }
 
+.line-clamp-4 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
 /* Custom utility classes for VMI theme */
 @layer utilities {
   .vmi-red {
