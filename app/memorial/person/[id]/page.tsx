@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { getPersonDetail, PersonDetailWithContributions } from '@/lib/api';
 import Header from '@/components/Header';
+import { awardImagePath } from '@/lib/awardImage';
 import ContributionForm from '@/components/ContributionForm';
 import ContributionDisplay from '@/components/ContributionDisplay';
 
@@ -178,16 +179,6 @@ export default function PersonPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {person.awards.map((award) => {
-                const getImagePath = (filename: string) => {
-                  const extensions = ['.jpg', '.png', '.jpeg', '.gif'];
-                  for (const ext of extensions) {
-                    if (filename.toLowerCase().endsWith(ext)) {
-                      return `/${filename}`;
-                    }
-                  }
-                  return `/${filename}.jpg`;
-                };
-
                 return (
                   <Link
                     key={award.award_id}
@@ -196,7 +187,7 @@ export default function PersonPage() {
                   >
                     <div className="relative w-16 h-20 flex-shrink-0">
                       <Image
-                        src={getImagePath(award.award_image_filename)}
+                        src={awardImagePath(award.award_image_filename)}
                         alt={award.award_name}
                         fill
                         className="object-contain"

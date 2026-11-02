@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
+import { awardImagePath } from '@/lib/awardImage';
 import DocumentIcon from '@/components/DocumentIcon';
 import { getAwardDetail, AwardDetail, AwardRecipient } from '@/lib/api';
 
@@ -32,17 +33,6 @@ export default function AwardDetailPage() {
       fetchAward();
     }
   }, [awardId]);
-
-  // Helper to get image path
-  const getImagePath = (filename: string) => {
-    const extensions = ['.jpg', '.png', '.jpeg', '.gif'];
-    for (const ext of extensions) {
-      if (filename.toLowerCase().endsWith(ext)) {
-        return `/${filename}`;
-      }
-    }
-    return `/${filename}.jpg`;
-  };
 
   const breadcrumbs = [
     { label: 'Home', href: '/' },
@@ -88,7 +78,7 @@ export default function AwardDetailPage() {
             {/* Award Image */}
             <div className="relative w-32 h-44 flex-shrink-0">
               <Image
-                src={getImagePath(award.image_filename)}
+                src={awardImagePath(award.image_filename)}
                 alt={award.name}
                 fill
                 className="object-contain"
