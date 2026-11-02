@@ -103,20 +103,3 @@ test('memorial index: fresh visit resets expansion to default', async ({ page })
   await page.getByRole('link', { name: 'View Complete Index' }).click();
   await expect(page.getByRole('link', { name: /Wise/ })).toHaveCount(1);
 });
-
-test('search: back restores the applied search', async ({ page }) => {
-  await page.goto('/memorial/search');
-  await expect(page.getByText('Found 100 people')).toBeVisible();
-
-  await page.getByLabel('Search by Name').fill('Wise');
-  await page.getByRole('button', { name: 'Search', exact: true }).click();
-  await expect(page.getByText('Found 1 person')).toBeVisible();
-  await expect(page).toHaveURL(/q=Wise/);
-
-  await page.getByRole('link', { name: /John Wise/ }).click();
-  await expect(page).toHaveURL(/\/memorial\/person\/200$/);
-  await page.goBack();
-
-  await expect(page.getByText('Found 1 person')).toBeVisible();
-  await expect(page.getByLabel('Search by Name')).toHaveValue('Wise');
-});

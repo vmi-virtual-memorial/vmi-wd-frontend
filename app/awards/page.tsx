@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
+import { awardImagePath } from '@/lib/awardImage';
 import { getAwards, Award } from '@/lib/api';
 
 export default function AwardsPage() {
@@ -30,20 +31,6 @@ export default function AwardsPage() {
     { label: 'Home', href: '/' },
     { label: 'Awards for Heroism and Gallantry' }
   ];
-
-  // Helper to get image extension
-  const getImagePath = (filename: string) => {
-    // Check for common extensions in public folder
-    const extensions = ['.jpg', '.png', '.jpeg', '.gif'];
-    for (const ext of extensions) {
-      // The filename in the DB might already include extension or not
-      if (filename.toLowerCase().endsWith(ext)) {
-        return `/${filename}`;
-      }
-    }
-    // Default to .jpg if no extension
-    return `/${filename}.jpg`;
-  };
 
   return (
     <div className="min-h-screen bg-vmi-cream">
@@ -94,7 +81,7 @@ export default function AwardsPage() {
                     {/* Award Image */}
                     <div className="relative w-24 h-32 mb-4">
                       <Image
-                        src={getImagePath(award.image_filename)}
+                        src={awardImagePath(award.image_filename)}
                         alt={award.name}
                         fill
                         className="object-contain"
