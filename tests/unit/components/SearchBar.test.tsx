@@ -55,8 +55,11 @@ describe('SearchBar', () => {
     expect(input()).toHaveAttribute('aria-expanded', 'true');
     expect(input()).toHaveAttribute('aria-controls', screen.getByRole('listbox').id);
     await screen.findByText('Complete Index');
-    expect(screen.getByRole('option', { name: /Advanced Search…/ })).toHaveAttribute('aria-selected', 'false');
-    expect(screen.getByRole('link', { name: /Advanced Search/ })).toHaveAttribute('href', '/memorial/search');
+    const advanced = screen.getByRole('option', { name: /Advanced Search…/ });
+    expect(advanced).toHaveAttribute('aria-selected', 'false');
+    expect(within(screen.getByRole('listbox')).queryAllByRole('link')).toEqual([]); // no nested interactive content
+    await userEvent.click(advanced);
+    expect(push).toHaveBeenCalledWith('/memorial/search');
   });
 
   it('shows recently viewed people', async () => {
@@ -181,9 +184,12 @@ describe('SearchBar', () => {
     expect(input()).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('the + Filter button and chip remove button work with the mouse', async () => {
+  it('the + Filter affordance and chip remove button work with the mouse', async () => {
     const user = await typeInBar('marines');
-    await user.click(screen.getByRole('button', { name: 'Filter by U.S. Marine Corps' }));
+    const branch = screen.getByRole('option', { name: /U.S. Marine Corps/ });
+    expect(branch).toHaveAccessibleDescription('Press Tab to add as a search filter.');
+    await user.click(screen.getByTestId('filter-branch:MARINES'));
+    expect(push).not.toHaveBeenCalled();
     const remove = screen.getByRole('button', { name: 'Remove filter: U.S. Marine Corps' });
     expect(screen.getByRole('group', { name: 'People' })).toBeInTheDocument();
     await user.click(remove);
@@ -192,17 +198,33 @@ describe('SearchBar', () => {
 
   it('does not add the same chip twice', async () => {
     const user = await typeInBar('marines');
-    await user.click(screen.getByRole('button', { name: 'Filter by U.S. Marine Corps' }));
+    await user.click(screen.getByTestId('filter-branch:MARINES'));
     await user.keyboard('marine corps');
     await screen.findByRole('group', { name: 'People' });
     expect(screen.queryByRole('group', { name: 'Branches' })).not.toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /Remove filter/ })).toHaveLength(1);
   });
 
-  it('clicking a row link finishes the search', async () => {
+  it('clicking a row navigates and finishes the search', async () => {
     const user = await typeInBar('vietnam');
-    await user.click(screen.getByRole('link', { name: /^Vietnam War/ }));
+    await user.click(screen.getByRole('option', { name: /^Vietnam War/ }));
+    expect(push).toHaveBeenCalledWith('/memorial/conflict/4');
     expect(input()).toHaveValue('');
+  });
+
+  it('modifier and middle clicks open the row in a new tab', async () => {
+    const open = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const user = await typeInBar('vietnam');
+    const row = screen.getByRole('option', { name: /^Vietnam War/ });
+    await user.keyboard('{Control>}');
+    await user.click(row);
+    await user.keyboard('{/Control}');
+    await user.pointer({ keys: '[MouseMiddle]', target: row });
+    expect(open).toHaveBeenCalledTimes(2);
+    expect(open).toHaveBeenCalledWith('/memorial/conflict/4', '_blank', 'noopener');
+    expect(push).not.toHaveBeenCalled();
+    expect(input()).toHaveValue('vietnam');
+    open.mockRestore();
   });
 
   it('clear button empties query and chips', async () => {

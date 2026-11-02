@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { getRecentPeople } from '@/lib/search/recent';
@@ -34,6 +33,7 @@ export default function SearchBar({ variant = 'inline', shortcuts = false, onClo
   const router = useRouter();
   const baseId = useId();
   const listboxId = `${baseId}-listbox`;
+  const filterHintId = `${baseId}-filter-hint`;
   const optionId = useCallback((i: number) => `${baseId}-option-${i}`, [baseId]);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -212,33 +212,50 @@ export default function SearchBar({ variant = 'inline', shortcuts = false, onClo
             ? `${model.peopleCount} ${model.peopleCount === 1 ? 'person' : 'people'} found.`
             : '';
 
+  // Options are plain options (no nested links/buttons, per the combobox pattern);
+  // clicking navigates in script, and modifier/middle clicks open a new tab.
+  const openRow = (row: Row, e: React.MouseEvent) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) {
+      window.open(row.href, '_blank', 'noopener');
+      return;
+    }
+    go(row.href);
+  };
+
   const renderOption = (row: Row) => {
     const i = rowIndex.get(row.id)!;
     const isActive = i === active;
+    const chip = 'chip' in row ? row.chip : null;
     return (
       <li
         key={row.id}
         id={optionId(i)}
         role="option"
         aria-selected={isActive}
+        aria-describedby={chip ? filterHintId : undefined}
         onMouseMove={() => i !== active && setActive(i)}
         onMouseDown={e => e.preventDefault() /* keep focus in the input */}
-        className={`group relative flex items-center border-l-4 ${isActive ? 'bg-vmi-light-gold border-vmi-red' : 'border-transparent'}`}
+        onClick={e => openRow(row, e)}
+        onAuxClick={e => e.button === 1 && openRow(row, e)}
+        className={`group relative flex cursor-pointer items-center border-l-4 ${isActive ? 'border-vmi-red bg-vmi-light-gold' : 'border-transparent'}`}
       >
-        <Link href={row.href} tabIndex={-1} onClick={finish} className="block min-w-0 flex-1 px-4 py-2 hover:no-underline">
+        <div className="min-w-0 flex-1 px-4 py-2">
           <RowContent row={row} engine={engine} />
-        </Link>
-        {'chip' in row && (
-          <button
-            type="button"
-            tabIndex={-1}
-            onClick={() => addChip(row.chip)}
-            aria-label={`Filter by ${row.chip.label}`}
+        </div>
+        {chip && (
+          // Pointer shortcut for Tab; screen readers get the hint via aria-describedby.
+          <span
+            aria-hidden="true"
+            data-testid={`filter-${chipKey(chip)}`}
+            onClick={e => {
+              e.stopPropagation();
+              addChip(chip);
+            }}
             title="Filter the search by this (Tab)"
             className={`mr-3 shrink-0 rounded border border-vmi-red px-2 py-0.5 text-xs font-semibold text-vmi-red hover:bg-vmi-red hover:text-white ${isActive ? 'visible' : 'invisible group-hover:visible'}`}
           >
             + Filter
-          </button>
+          </span>
         )}
       </li>
     );
@@ -362,6 +379,9 @@ export default function SearchBar({ variant = 'inline', shortcuts = false, onClo
       <div aria-live="polite" className="sr-only">
         {status}
       </div>
+      <span id={filterHintId} className="sr-only">
+        Press Tab to add as a search filter.
+      </span>
     </div>
   );
 }
