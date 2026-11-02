@@ -28,7 +28,7 @@ export default function Header({
     <header className="bg-vmi-red shadow-lg">
       <div className="max-w-6xl mx-auto px-4 py-4">
         <div className="flex items-center gap-3 md:gap-4">
-          <Link href="/" className="group flex shrink-0 items-center gap-3 text-white" aria-label={home ? undefined : 'VMI Virtual Memorial home'}>
+          <Link href="/" className="group flex shrink-0 items-center gap-3 text-white" aria-label={home ? undefined : 'VMI Virtual Memorial'}>
             <span
               className={`flex items-center justify-center rounded-full border-white bg-vmi-gold font-bold text-vmi-red ${
                 home ? 'h-11 w-11 border-2 text-sm sm:h-16 sm:w-16 sm:border-4 sm:text-xl' : 'h-11 w-11 border-2 text-sm'
