@@ -2,25 +2,18 @@
  "version": 1,
  "conflicts": [
   {
-   "id": 1,
-   "name": "World War II",
-   "start_year": 1939,
-   "end_year": 1945,
-   "casualty_count": 10
+   "id": 9,
+   "name": "Global War on Terror",
+   "start_year": 2001,
+   "end_year": 2021,
+   "casualty_count": 3
   },
   {
-   "id": 2,
-   "name": "World War I",
-   "start_year": 1914,
-   "end_year": 1918,
-   "casualty_count": 5
-  },
-  {
-   "id": 3,
-   "name": "Civil War",
-   "start_year": 1861,
-   "end_year": 1865,
-   "casualty_count": 6
+   "id": 8,
+   "name": "Gulf War/Operation Desert Storm",
+   "start_year": 1991,
+   "end_year": 1991,
+   "casualty_count": 1
   },
   {
    "id": 4,
@@ -37,11 +30,18 @@
    "casualty_count": 3
   },
   {
-   "id": 6,
-   "name": "Mexican-American War",
-   "start_year": 1846,
-   "end_year": 1848,
-   "casualty_count": 1
+   "id": 1,
+   "name": "World War II",
+   "start_year": 1939,
+   "end_year": 1945,
+   "casualty_count": 10
+  },
+  {
+   "id": 2,
+   "name": "World War I",
+   "start_year": 1914,
+   "end_year": 1918,
+   "casualty_count": 5
   },
   {
    "id": 7,
@@ -51,20 +51,6 @@
    "casualty_count": 2
   },
   {
-   "id": 8,
-   "name": "Gulf War/Operation Desert Storm",
-   "start_year": 1991,
-   "end_year": 1991,
-   "casualty_count": 1
-  },
-  {
-   "id": 9,
-   "name": "Global War on Terror",
-   "start_year": 2001,
-   "end_year": 2021,
-   "casualty_count": 3
-  },
-  {
    "id": 10,
    "name": "Battle of New Market",
    "start_year": 1864,
@@ -72,10 +58,24 @@
    "casualty_count": 2
   },
   {
+   "id": 3,
+   "name": "Civil War",
+   "start_year": 1861,
+   "end_year": 1865,
+   "casualty_count": 6
+  },
+  {
    "id": 11,
    "name": "CIVIL WAR - MS CADETS",
    "start_year": 1861,
    "end_year": 1865,
+   "casualty_count": 1
+  },
+  {
+   "id": 6,
+   "name": "Mexican-American War",
+   "start_year": 1846,
+   "end_year": 1848,
    "casualty_count": 1
   }
  ],
