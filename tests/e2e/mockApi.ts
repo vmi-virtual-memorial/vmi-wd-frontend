@@ -1,4 +1,6 @@
 import type { Page } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 
 const API = 'http://mock-api.test/api';
 
@@ -59,6 +61,36 @@ civilWar[0] = person(200, 2, {
 });
 const everyone = [...ww2, ...civilWar];
 
+// Mock ids 200-204 shadow fixture ids 201-204 on person pages; search specs avoid them.
+// Search runs on the synthetic search_demo fixture (the same data the backend
+// full-stack e2e job loads), so search specs pass against mocks or a real API.
+interface IndexPerson {
+  id: number; first_name: string; middle_name: string; last_name: string; suffix: string; rank: string;
+  unit: string; class_year: number | null; class_letter: string; conflict: number; date_of_death: string | null;
+  death_date_display: string | null; death_description: string; has_document: boolean; awards: number[];
+}
+export const searchIndex = JSON.parse(
+  readFileSync(path.join(__dirname, '..', 'fixtures', 'search-index.json'), 'utf8'),
+) as { conflicts: { id: number; name: string }[]; awards: { id: number; name: string; image_filename: string }[]; people: IndexPerson[] };
+
+function indexPersonDetail(p: IndexPerson) {
+  const name = [p.first_name, p.middle_name, p.last_name, p.suffix].filter(Boolean).join(' ');
+  return {
+    ...p,
+    display_name: [p.rank, name].filter(Boolean).join(' '),
+    full_display_name: name,
+    death_date_precision: 'day',
+    conflict_name: searchIndex.conflicts.find(c => c.id === p.conflict)?.name ?? '',
+    pdf_key: '',
+    pdf_url: null,
+    contributions: [],
+    awards: p.awards.map(id => {
+      const award = searchIndex.awards.find(a => a.id === id)!;
+      return { award_id: id, award_name: award.name, award_image_filename: award.image_filename, count: 1, date_awarded: null, citation: '' };
+    }),
+  };
+}
+
 export async function mockApi(page: Page) {
   await page.route(`${API}/**`, async route => {
     const url = new URL(route.request().url());
@@ -81,6 +113,7 @@ export async function mockApi(page: Page) {
         })
       );
     }
+    if (path === '/search-index/') return json(searchIndex);
     if (path === '/search-filters/') {
       return json({ conflicts, class_years: [1862, 1942] });
     }
@@ -96,7 +129,9 @@ export async function mockApi(page: Page) {
     const detail = path.match(/^\/persons\/(\d+)\/$/);
     if (detail) {
       const p = everyone.find(x => x.id === Number(detail[1]));
-      return p ? json({ ...p, contributions: [], awards: [] }) : route.fulfill({ status: 404, json: {} });
+      if (p) return json({ ...p, contributions: [], awards: [] });
+      const indexed = searchIndex.people.find(x => x.id === Number(detail[1]));
+      return indexed ? json(indexPersonDetail(indexed)) : route.fulfill({ status: 404, json: {} });
     }
     return route.fulfill({ status: 404, json: { error: `unmocked ${path}` } });
   });
