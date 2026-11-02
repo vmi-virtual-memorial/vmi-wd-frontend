@@ -1,4 +1,5 @@
 // API configuration for the VMI Memorial frontend
+import type { SearchIndexData } from './search/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
@@ -314,6 +315,15 @@ export async function getAwardDetail(awardId: number): Promise<AwardDetail> {
   const response = await fetch(`${API_BASE_URL}/memorial/awards/${awardId}/`);
   if (!response.ok) {
     throw new Error('Failed to fetch award details');
+  }
+  return response.json();
+}
+
+// Compact snapshot for in-browser search (gzipped, cached by the browser via Cache-Control/ETag)
+export async function getSearchIndex(): Promise<SearchIndexData> {
+  const response = await fetch(`${API_BASE_URL}/memorial/search-index/`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch search index');
   }
   return response.json();
 }
