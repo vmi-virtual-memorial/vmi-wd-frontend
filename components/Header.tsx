@@ -31,7 +31,7 @@ export default function Header({
           <Link href="/" className="group flex shrink-0 items-center gap-3 text-white" aria-label={home ? undefined : 'VMI Virtual Memorial home'}>
             <span
               className={`flex items-center justify-center rounded-full border-white bg-vmi-gold font-bold text-vmi-red ${
-                home ? 'h-16 w-16 border-4 text-xl' : 'h-11 w-11 border-2 text-sm'
+                home ? 'h-11 w-11 border-2 text-sm sm:h-16 sm:w-16 sm:border-4 sm:text-xl' : 'h-11 w-11 border-2 text-sm'
               }`}
             >
               VMI
@@ -59,17 +59,23 @@ export default function Header({
             {showAwards && (
               <Link
                 href="/awards"
-                className="rounded bg-[#FFD619] px-3 py-2 text-center text-xs font-bold leading-tight text-[#AE122A] shadow-md transition-colors hover:bg-white sm:px-4 sm:text-sm"
+                aria-label="Awards for Heroism & Gallantry"
+                className="rounded bg-[#FFD619] px-3 py-2 text-center text-sm font-bold leading-tight text-[#AE122A] shadow-md transition-colors hover:bg-white sm:px-4"
               >
-                Awards for<br />Heroism &amp; Gallantry
+                <span className="sm:hidden">Awards</span>
+                <span className="hidden sm:inline">
+                  Awards for<br />Heroism &amp; Gallantry
+                </span>
               </Link>
             )}
             {showIndex && (
               <Link
                 href="/memorial"
+                aria-label="View Complete Index"
                 className="rounded bg-[#FFD619] px-3 py-2 text-sm font-bold text-[#AE122A] shadow-md transition-colors hover:bg-white sm:px-6 sm:text-base"
               >
-                <span className="hidden sm:inline">View </span>Complete Index
+                <span className="sm:hidden">Index</span>
+                <span className="hidden sm:inline">View Complete Index</span>
               </Link>
             )}
           </nav>
