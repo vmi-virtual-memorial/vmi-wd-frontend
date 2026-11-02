@@ -19,7 +19,10 @@ import { activeFilters } from '@/components/search/ActiveFilters';
 import AdvancedSearch from '@/components/search/AdvancedSearch';
 
 const found = () => screen.getByText(/^Found \d+ (person|people)$/).textContent;
-const resultNames = () => screen.queryAllByRole('heading', { level: 3 }).map(h => h.textContent);
+const resultNames = () =>
+  within(screen.getByRole('region', { name: 'Memorial Search' }))
+    .queryAllByRole('heading', { level: 2 })
+    .map(h => h.textContent);
 const url = () => new URLSearchParams(window.location.search);
 
 async function renderAt(query = '') {

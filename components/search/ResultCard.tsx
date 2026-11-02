@@ -22,14 +22,14 @@ export default function ResultCard({ hit, engine }: { hit: PersonHit; engine: Se
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="min-w-0 md:col-span-2">
-          <h3 className="flex flex-wrap items-center gap-2 text-xl font-bold text-gray-800 transition-colors group-hover:text-vmi-red">
+          <h2 className="flex flex-wrap items-center gap-2 text-xl font-bold text-gray-800 transition-colors group-hover:text-vmi-red">
             <span>
               <Highlight text={personName(p)} terms={terms} />
-              {p.class_year && <span className="ml-1.5 font-normal text-gray-500">{formatClassYear(p.class_year, p.class_letter)}</span>}
+              {p.class_year && <span className="ml-1.5 font-normal text-gray-600">{formatClassYear(p.class_year, p.class_letter)}</span>}
             </span>
             {p.awards.length > 0 && <AwardIcon className="flex-shrink-0" title={`Awarded: ${awards.join(', ')}`} />}
             {p.has_document && <DocumentIcon className="flex-shrink-0" />}
-          </h3>
+          </h2>
           {p.rank && (
             <p className="text-gray-700">
               <Highlight text={p.rank} terms={terms} />
@@ -54,7 +54,7 @@ export default function ResultCard({ hit, engine }: { hit: PersonHit; engine: Se
         <div className="md:text-right">
           {conflict && <p className="font-semibold text-gray-700">{conflict.name}</p>}
           {p.death_date_display && <p className="text-sm text-gray-600">{p.death_date_display}</p>}
-          {branch && <p className="text-sm text-gray-500">{branch.name}</p>}
+          {branch && <p className="text-sm text-gray-600">{branch.name}</p>}
           <span className="mt-2 inline-block font-bold text-vmi-red group-hover:text-vmi-dark-red">View Details →</span>
         </div>
       </div>

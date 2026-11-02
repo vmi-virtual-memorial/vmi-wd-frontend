@@ -11,7 +11,7 @@ import Highlight from './Highlight';
 const years = (start: number, end: number | null) => (start === end ? `${start}` : `${start}–${end ?? 'present'}`);
 
 const Count = ({ children }: { children: React.ReactNode }) => (
-  <span className="text-sm text-gray-500 whitespace-nowrap">{children}</span>
+  <span className="text-sm text-gray-600 whitespace-nowrap">{children}</span>
 );
 
 /** The visible content of one dropdown row. Only person rows need the engine (for names of related records). */
@@ -77,7 +77,7 @@ export default function RowContent({ row, engine }: { row: Row; engine: SearchEn
           <div className="flex items-center gap-2 font-semibold text-gray-900">
             <span className="truncate">
               <Highlight text={personName(p)} terms={terms} />
-              {p.class_year && <span className="ml-1.5 font-normal text-gray-500">{formatClassYear(p.class_year, p.class_letter)}</span>}
+              {p.class_year && <span className="ml-1.5 font-normal text-gray-600">{formatClassYear(p.class_year, p.class_letter)}</span>}
             </span>
             {p.awards.length > 0 && (
               <>
@@ -103,7 +103,7 @@ export default function RowContent({ row, engine }: { row: Row; engine: SearchEn
             </div>
           ) : (
             cod && (
-              <div className="hidden sm:block text-sm text-gray-500 italic truncate">
+              <div className="hidden sm:block text-sm text-gray-600 italic truncate">
                 <Highlight text={codSnippet ?? cod} terms={codSnippet ? terms : []} />
               </div>
             )
