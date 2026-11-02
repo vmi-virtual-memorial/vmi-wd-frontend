@@ -17,9 +17,24 @@ const listbox = (page: Page) => page.getByRole('listbox', { name: 'Search sugges
 const group = (page: Page, name: string) => listbox(page).getByRole('group', { name, exact: true });
 const found = (page: Page) => page.getByText(/^Found \d+ (person|people)$/);
 
+// Pages hydrate after the load event, so the first interaction can land before
+// React's handlers exist. These helpers retry the action until the UI responds
+// (the list opens, focus moves, the sheet appears) instead of racing hydration.
 async function search(page: Page, text: string) {
-  await bar(page).click();
-  await bar(page).fill(text);
+  await expect(async () => {
+    await bar(page).click();
+    await bar(page).fill(text);
+    await expect(listbox(page)).toBeVisible({ timeout: 1000 });
+  }).toPass();
+}
+
+async function openSheet(page: Page) {
+  const dialog = page.getByRole('dialog', { name: 'Search the memorial' });
+  await expect(async () => {
+    if (!(await dialog.isVisible())) await page.getByRole('button', { name: 'Search the memorial' }).click();
+    await expect(dialog).toBeVisible({ timeout: 1000 });
+  }).toPass();
+  return dialog;
 }
 
 test.describe('header search bar', () => {
@@ -96,9 +111,11 @@ test.describe('header search bar', () => {
   test('keyboard shortcuts focus the bar; Escape and outside clicks close it', async ({ page }) => {
     const elsewhere = () => page.mouse.click(5, 700); // page margin, clear of the dropdown
     await page.goto('/');
-    await elsewhere();
-    await page.keyboard.press('ControlOrMeta+k');
-    await expect(bar(page)).toBeFocused();
+    await expect(async () => {
+      await elsewhere();
+      await page.keyboard.press('ControlOrMeta+k');
+      await expect(bar(page)).toBeFocused({ timeout: 1000 });
+    }).toPass();
     await expect(listbox(page)).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(listbox(page)).toBeHidden();
@@ -115,7 +132,7 @@ test.describe('header search bar', () => {
   test('recently viewed people show on an empty bar', async ({ page }) => {
     await page.goto('/memorial/person/106');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Charles Dunmore Fitch');
-    await bar(page).click();
+    await search(page, '');
     await expect(group(page, 'Recently viewed')).toContainText('Charles Dunmore Fitch');
   });
 
@@ -183,8 +200,7 @@ test.describe('mobile search', () => {
 
   test('opens a full-screen sheet and navigates', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: 'Search the memorial' }).click();
-    const dialog = page.getByRole('dialog', { name: 'Search the memorial' });
+    const dialog = await openSheet(page);
     await expect(dialog.getByRole('combobox')).toBeFocused();
     await page.keyboard.type('vietnam');
     await dialog.getByRole('group', { name: 'Conflicts', exact: true }).getByRole('option').first().click();
@@ -196,7 +212,7 @@ test.describe('mobile search', () => {
     await page.goto('/');
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(0);
-    await page.getByRole('button', { name: 'Search the memorial' }).click();
+    await openSheet(page);
     await page.getByRole('button', { name: 'Cancel' }).click();
     await expect(page.getByRole('dialog')).toBeHidden();
   });
