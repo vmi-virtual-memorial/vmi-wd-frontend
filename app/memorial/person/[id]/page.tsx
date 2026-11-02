@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { getPersonDetail, PersonDetailWithContributions } from '@/lib/api';
 import Header from '@/components/Header';
 import { awardImagePath } from '@/lib/awardImage';
+import { recordRecentPerson } from '@/lib/search/recent';
 import ContributionForm from '@/components/ContributionForm';
 import ContributionDisplay from '@/components/ContributionDisplay';
 
@@ -26,6 +27,7 @@ export default function PersonPage() {
       try {
         const personData = await getPersonDetail(personId);
         setPerson(personData);
+        recordRecentPerson(personData.id);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load person details');
         console.error(err);
