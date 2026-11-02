@@ -29,14 +29,7 @@ export default function MobileSearch({ className = '' }: { className?: string })
       </button>
       {open && (
         <div role="dialog" aria-modal="true" aria-label="Search the memorial" className="fixed inset-0 z-50 flex flex-col bg-white p-3">
-          <div className="flex min-h-0 flex-1 items-start gap-2">
-            <div className="h-full min-w-0 flex-1">
-              <SearchBar variant="sheet" onClose={() => setOpen(false)} />
-            </div>
-            <button type="button" onClick={() => setOpen(false)} className="px-2 py-2 font-semibold text-vmi-red">
-              Cancel
-            </button>
-          </div>
+          <SearchBar variant="sheet" onClose={() => setOpen(false)} />
         </div>
       )}
     </>

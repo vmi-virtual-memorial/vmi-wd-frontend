@@ -225,7 +225,7 @@ export default function SearchBar({ variant = 'inline', shortcuts = false, onClo
         onMouseDown={e => e.preventDefault() /* keep focus in the input */}
         className={`group relative flex items-center border-l-4 ${isActive ? 'bg-vmi-light-gold border-vmi-red' : 'border-transparent'}`}
       >
-        <Link href={row.href} tabIndex={-1} onClick={finish} className="block flex-1 min-w-0 px-4 py-2">
+        <Link href={row.href} tabIndex={-1} onClick={finish} className="block min-w-0 flex-1 px-4 py-2 hover:no-underline">
           <RowContent row={row} engine={engine} />
         </Link>
         {'chip' in row && (
@@ -246,57 +246,64 @@ export default function SearchBar({ variant = 'inline', shortcuts = false, onClo
 
   return (
     <div ref={containerRef} className={`relative w-full ${sheet ? 'flex h-full flex-col' : ''}`}>
-      <div className="flex flex-wrap items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1 shadow-inner focus-within:ring-2 focus-within:ring-vmi-gold">
-        <SearchIcon className="h-5 w-5 flex-shrink-0 text-gray-500" />
-        {chips.map(chip => (
-          <span key={chipKey(chip)} className="inline-flex max-w-full items-center gap-1 rounded-full bg-vmi-red py-0.5 pl-2.5 pr-1 text-sm text-white">
-            <span className="truncate">
-              <span className="text-white/75">{CHIP_PREFIX[chip.kind]}:</span> {chip.label}
+      <div className="flex items-start gap-2">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1 shadow-inner focus-within:ring-2 focus-within:ring-vmi-gold">
+          <SearchIcon className="h-5 w-5 flex-shrink-0 text-gray-500" />
+          {chips.map(chip => (
+            <span key={chipKey(chip)} className="inline-flex max-w-full items-center gap-1 rounded-full bg-vmi-red py-0.5 pl-2.5 pr-1 text-sm text-white">
+              <span className="truncate">
+                <span className="text-white/75">{CHIP_PREFIX[chip.kind]}:</span> {chip.label}
+              </span>
+              <button
+                type="button"
+                onClick={() => removeChip(chip)}
+                aria-label={`Remove filter: ${chip.label}`}
+                className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/20"
+              >
+                ×
+              </button>
             </span>
-            <button
-              type="button"
-              onClick={() => removeChip(chip)}
-              aria-label={`Remove filter: ${chip.label}`}
-              className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full hover:bg-white/20"
-            >
-              ×
+          ))}
+          <input
+            ref={inputRef}
+            type="text"
+            role="combobox"
+            aria-label="Search the memorial"
+            aria-expanded={open}
+            aria-controls={open ? listboxId : undefined}
+            aria-autocomplete="list"
+            aria-activedescendant={open && active >= 0 ? optionId(active) : undefined}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint="search"
+            placeholder={chips.length ? 'Refine…' : 'Search names, units, awards, battles…'}
+            value={query}
+            onChange={e => {
+              setQuery(e.target.value);
+              openList();
+            }}
+            onFocus={openList}
+            onClick={openList}
+            onKeyDown={onKeyDown}
+            className="min-w-[8rem] flex-1 bg-transparent py-1 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none"
+          />
+          {query || chips.length ? (
+            <button type="button" onClick={clear} aria-label="Clear search" className="px-1 text-gray-500 hover:text-vmi-red">
+              ✕
             </button>
-          </span>
-        ))}
-        <input
-          ref={inputRef}
-          type="text"
-          role="combobox"
-          aria-label="Search the memorial"
-          aria-expanded={open}
-          aria-controls={open ? listboxId : undefined}
-          aria-autocomplete="list"
-          aria-activedescendant={open && active >= 0 ? optionId(active) : undefined}
-          autoComplete="off"
-          autoCorrect="off"
-          spellCheck={false}
-          enterKeyHint="search"
-          placeholder={chips.length ? 'Refine…' : 'Search names, units, awards, battles…'}
-          value={query}
-          onChange={e => {
-            setQuery(e.target.value);
-            openList();
-          }}
-          onFocus={openList}
-          onClick={openList}
-          onKeyDown={onKeyDown}
-          className="min-w-[8rem] flex-1 bg-transparent py-1 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none"
-        />
-        {query || chips.length ? (
-          <button type="button" onClick={clear} aria-label="Clear search" className="px-1 text-gray-500 hover:text-vmi-red">
-            ✕
+          ) : (
+            shortcuts && (
+              <kbd aria-hidden="true" className="hidden rounded border border-gray-300 px-1.5 text-xs text-gray-500 lg:inline">
+                {modKey}K
+              </kbd>
+            )
+          )}
+        </div>
+        {sheet && (
+          <button type="button" onClick={onClose} className="px-1 py-2 font-semibold text-vmi-red">
+            Cancel
           </button>
-        ) : (
-          shortcuts && (
-            <kbd aria-hidden="true" className="hidden rounded border border-gray-300 px-1.5 text-xs text-gray-500 lg:inline">
-              {modKey}K
-            </kbd>
-          )
         )}
       </div>
 

@@ -19,7 +19,7 @@ export default function RowContent({ row, engine }: { row: Row; engine: SearchEn
   switch (row.kind) {
     case 'conflict':
       return (
-        <div className="flex items-baseline justify-between gap-3">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-3">
           <span className="font-semibold text-gray-900">
             <Highlight text={row.item.name} terms={row.terms} />
           </span>
@@ -54,7 +54,7 @@ export default function RowContent({ row, engine }: { row: Row; engine: SearchEn
       const label = row.kind === 'branch' ? row.item.name : row.kind === 'unit' ? row.item.label : `Class of ${row.item.label}`;
       const count = row.kind === 'branch' ? row.item.count : row.kind === 'unit' ? row.item.personIds.length : row.item.count;
       return (
-        <div className="flex items-baseline justify-between gap-3">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-3">
           <span className="font-semibold text-gray-900 min-w-0">
             <Highlight text={label} terms={row.terms} />
           </span>
@@ -114,7 +114,7 @@ export default function RowContent({ row, engine }: { row: Row; engine: SearchEn
 
     case 'link':
       return (
-        <div className="flex items-baseline justify-between gap-3">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-3">
           <span className="font-semibold text-vmi-red">{row.label}</span>
           {row.detail && <Count>{row.detail}</Count>}
         </div>
